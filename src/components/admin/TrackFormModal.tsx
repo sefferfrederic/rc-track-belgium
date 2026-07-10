@@ -132,7 +132,7 @@ export default function TrackFormModal({
   const scales = taxonomies.filter((t) => t.type === "scale");
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm md:items-center">
+    <div className="fixed inset-0 z-[9999] flex items-end justify-center bg-black/70 backdrop-blur-sm md:items-center">
       <div className="flex max-h-[90vh] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-t-xl2 border border-track-border bg-track-surface p-5 md:rounded-xl2">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-lg font-bold uppercase">

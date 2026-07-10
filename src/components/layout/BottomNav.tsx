@@ -18,7 +18,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-track-border bg-track-surface/95 backdrop-blur">
+    <nav className="fixed inset-x-0 bottom-0 z-[1000] border-t border-track-border bg-track-surface/95 backdrop-blur">
       <ul className="mx-auto flex max-w-3xl items-stretch justify-between px-1">
         {ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;

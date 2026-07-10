@@ -102,9 +102,9 @@ export default function SessionCard({
             </Button>
             <button
               onClick={() => setChatOpen(true)}
-              className="ml-auto flex items-center gap-1.5 rounded-full border border-track-border px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wide text-track-muted hover:text-track-white"
+              className="ml-auto flex items-center gap-1.5 rounded-full bg-flag-gradient px-4 py-2 text-xs font-display font-bold uppercase tracking-wide text-track-bg shadow-glow"
             >
-              <MessageCircle size={14} /> Chat
+              <MessageCircle size={15} strokeWidth={2.5} /> Chat
             </button>
           </>
         ) : (
