@@ -25,10 +25,11 @@ sur quelle piste, et à quelle heure — pour arrêter de rouler chacun de son c
 ✅ Piste favorite choisie directement dans le profil
 ✅ Panneau d'administration (réservé aux admins) : événements, pistes (CRUD complet), catégories dynamiques (disciplines/surfaces/échelles)
 ✅ Page Événements publique avec "Je participe" / "Je suis intéressé", visibles aussi dans l'Agenda
-✅ Carte : contraste amélioré pour une meilleure lisibilité
-✅ Carte en mode clair (façon Google Maps) au lieu du mode sombre
-✅ Création de session possible de 3 façons : Accueil, Agenda (jour cliqué), fiche piste dans la liste
+✅ Création de session possible de 3 façons : Accueil, Agenda (jour cliqué), fiche piste, carte interactive
 ✅ Choix de la discipline/échelle lors de la création de session (si la piste en propose plusieurs)
+✅ Chat éphémère par session, réservé aux participants, supprimé automatiquement 48h après la fin
+✅ Aperçu rapide des prochaines sessions sur la piste favorite (Accueil)
+✅ Connexion Apple retirée (Google + Email uniquement)
 ✅ Navigation complète
 
 ## À venir (voir `docs/architecture.md` pour le détail des phases)

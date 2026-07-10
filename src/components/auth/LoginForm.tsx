@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
-import { signInWithGoogle, signInWithApple, signInWithEmail, signUpWithEmail } from "@/lib/firebase/auth";
+import { signInWithGoogle, signInWithEmail, signUpWithEmail } from "@/lib/firebase/auth";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -33,9 +33,6 @@ export default function LoginForm() {
 
       <Button variant="secondary" disabled={loading} onClick={() => withLoading(signInWithGoogle)}>
         Continuer avec Google
-      </Button>
-      <Button variant="secondary" disabled={loading} onClick={() => withLoading(signInWithApple)}>
-        Continuer avec Apple
       </Button>
 
       <div className="my-2 flex items-center gap-3 text-xs uppercase text-track-muted">

@@ -47,6 +47,7 @@ export interface RidingSession {
   dayKey: string; // "AAAA-MM-JJ", sert aussi de partie de l'ID du document (trackId__dayKey)
   createdBy: string;
   participants: SessionParticipant[];
+  participantUids: string[]; // miroir de participants[].uid — utilisé par les règles de sécurité du chat
   // champs calculés côté client/Cloud Function pour l'affichage regroupé
   windowStart: number; // timestamp ms, min de tous les participants
   windowEnd: number; // timestamp ms, max de tous les participants

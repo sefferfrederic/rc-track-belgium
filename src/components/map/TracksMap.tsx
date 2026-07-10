@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { fetchTracks, fetchTaxonomies } from "@/lib/firebase/tracks";
+import { useAuth } from "@/contexts/AuthContext";
+import SessionFormModal from "@/components/session/SessionFormModal";
 import type { Track, Taxonomy } from "@/types";
 
 // Belgique : centre approximatif + zoom qui montre tout le pays
@@ -34,10 +37,13 @@ function markerIcon(color: string) {
 }
 
 export default function TracksMap() {
+  const { user } = useAuth();
+  const router = useRouter();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [taxonomies, setTaxonomies] = useState<Taxonomy[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeDiscipline, setActiveDiscipline] = useState<string | null>(null);
+  const [sessionTrackId, setSessionTrackId] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([fetchTracks(), fetchTaxonomies()]).then(([t, tax]) => {
@@ -54,6 +60,14 @@ export default function TracksMap() {
   );
 
   const disciplineLabel = (id: string) => taxonomies.find((t) => t.id === id)?.label ?? id;
+
+  function handleCreateHere(trackId: string) {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    setSessionTrackId(trackId);
+  }
 
   return (
     <div className="flex flex-col gap-3">
@@ -127,6 +141,12 @@ export default function TracksMap() {
                           Voir le site du club →
                         </a>
                       )}
+                      <button
+                        onClick={() => handleCreateHere(track.id)}
+                        className="mt-3 w-full rounded-full bg-flag-gradient px-3 py-2 text-xs font-display font-semibold uppercase tracking-wide text-track-bg"
+                      >
+                        Créer une session ici
+                      </button>
                     </div>
                   </Popup>
                 </Marker>
@@ -138,8 +158,16 @@ export default function TracksMap() {
       <p className="text-xs text-track-muted">
         {filteredTracks.length} piste{filteredTracks.length > 1 ? "s" : ""} affichée
         {filteredTracks.length > 1 ? "s" : ""}. Le niveau d'activité en temps réel (vert/orange/rouge)
-        arrivera en Phase 3, une fois les sessions de roulage connectées.
+        arrivera plus tard.
       </p>
+
+      {sessionTrackId && (
+        <SessionFormModal
+          fixedTrackId={sessionTrackId}
+          onClose={() => setSessionTrackId(null)}
+          onSaved={() => setSessionTrackId(null)}
+        />
+      )}
     </div>
   );
 }

@@ -6,14 +6,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import Button from "@/components/ui/Button";
 import SessionCard from "@/components/session/SessionCard";
 import SessionFormModal from "@/components/session/SessionFormModal";
-import { fetchSessionsForDay } from "@/lib/firebase/sessions";
+import { fetchSessionsForDay, fetchUpcomingSessionsForTrack } from "@/lib/firebase/sessions";
 import { fetchTracks, fetchTaxonomies } from "@/lib/firebase/tracks";
 import { todayDayKey } from "@/lib/date";
 import type { RidingSession, Track, Taxonomy } from "@/types";
 
 export default function HomePage() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [sessions, setSessions] = useState<RidingSession[]>([]);
+  const [favoriteSessions, setFavoriteSessions] = useState<RidingSession[]>([]);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [taxonomies, setTaxonomies] = useState<Taxonomy[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,6 +40,14 @@ export default function HomePage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    if (profile?.favoriteTrackId) {
+      fetchUpcomingSessionsForTrack(profile.favoriteTrackId, todayDayKey()).then(setFavoriteSessions);
+    } else {
+      setFavoriteSessions([]);
+    }
+  }, [profile?.favoriteTrackId]);
 
   const trackName = (id: string) => tracks.find((t) => t.id === id)?.name ?? id;
 
@@ -75,6 +84,44 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
+      {user && profile?.favoriteTrackId && (
+        <section>
+          <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-track-muted">
+            Ta piste favorite — {trackName(profile.favoriteTrackId)}
+          </h2>
+          {favoriteSessions.length === 0 ? (
+            <p className="mt-3 text-sm text-track-muted">
+              Rien de prévu prochainement sur ta piste favorite.
+            </p>
+          ) : (
+            <ul className="mt-3 flex flex-col gap-2">
+              {favoriteSessions.map((s) => (
+                <li
+                  key={s.id}
+                  className="flex items-center justify-between rounded-xl2 border border-track-border bg-track-surface p-3 text-sm"
+                >
+                  <span className="font-semibold">
+                    {new Date(`${s.dayKey}T00:00:00`).toLocaleDateString("fr-BE", {
+                      weekday: "short",
+                      day: "numeric",
+                      month: "short",
+                    })}
+                  </span>
+                  <span className="text-track-muted">
+                    {new Date(s.windowStart).toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" })}
+                    {" → "}
+                    {new Date(s.windowEnd).toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                  <span className="text-track-orange">
+                    {s.participants.length} pilote{s.participants.length > 1 ? "s" : ""}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
       <section>
         <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-track-muted">

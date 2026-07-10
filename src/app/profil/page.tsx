@@ -92,7 +92,7 @@ export default function ProfilPage() {
           Piste favorite
         </label>
         <p className="mt-1 text-xs text-track-muted">
-          Tu seras notifié si quelqu'un annonce y rouler avec une certitude ≥ 75%.
+          Utilisée pour l&apos;aperçu rapide des prochaines sessions sur l&apos;Accueil.
         </p>
         <select
           value={profile.favoriteTrackId ?? ""}

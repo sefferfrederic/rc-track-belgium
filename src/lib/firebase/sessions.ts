@@ -113,6 +113,7 @@ export async function upsertSessionEntry(params: UpsertSessionParams): Promise<v
       trackId: params.trackId,
       dayKey: params.dayKey,
       participants,
+      participantUids: participants.map((p) => p.uid),
       windowStart: agg.windowStart,
       windowEnd: agg.windowEnd,
       peakStart: agg.peakStart,
@@ -146,6 +147,7 @@ export async function cancelSessionEntry(
     const agg = computeAggregates(participants);
     tx.update(ref, {
       participants,
+      participantUids: participants.map((p) => p.uid),
       windowStart: agg.windowStart,
       windowEnd: agg.windowEnd,
       peakStart: agg.peakStart,
@@ -179,4 +181,19 @@ export async function fetchSessionsForRange(
   );
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as RidingSession);
+}
+
+/** Prochaines sessions à venir sur une piste donnée (ex. piste favorite), triées par date. */
+export async function fetchUpcomingSessionsForTrack(
+  trackId: string,
+  fromDayKey: string,
+  max = 5
+): Promise<RidingSession[]> {
+  const q = query(collection(db, "sessions"), where("trackId", "==", trackId));
+  const snap = await getDocs(q);
+  return snap.docs
+    .map((d) => ({ id: d.id, ...d.data() }) as RidingSession)
+    .filter((s) => s.dayKey >= fromDayKey)
+    .sort((a, b) => a.dayKey.localeCompare(b.dayKey) || a.windowStart - b.windowStart)
+    .slice(0, max);
 }

@@ -52,9 +52,18 @@ service cloud.firestore {
       allow delete: if isSignedIn();
 
       match /chat/{messageId} {
-        allow read: if isSignedIn();
-        allow create: if isSignedIn() && request.resource.data.authorUid == request.auth.uid;
-        allow update, delete: if isAdmin();
+        allow read: if isSignedIn() &&
+          request.auth.uid in get(/databases/$(database)/documents/sessions/$(sessionId)).data.participantUids;
+        allow create: if isSignedIn() &&
+          request.resource.data.authorUid == request.auth.uid &&
+          request.auth.uid in get(/databases/$(database)/documents/sessions/$(sessionId)).data.participantUids;
+        allow update: if isAdmin();
+        // Un participant peut supprimer un message, mais UNIQUEMENT s'il est déjà expiré
+        // (nettoyage automatique 48h, déclenché à l'ouverture du chat — voir lib/firebase/chat.ts)
+        allow delete: if isAdmin() ||
+          (isSignedIn() &&
+            request.auth.uid in get(/databases/$(database)/documents/sessions/$(sessionId)).data.participantUids &&
+            resource.data.expiresAt <= request.time.toMillis());
       }
     }
 

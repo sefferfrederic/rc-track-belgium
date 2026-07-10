@@ -1,6 +1,5 @@
 import {
   GoogleAuthProvider,
-  OAuthProvider,
   signInWithPopup,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -37,14 +36,6 @@ async function ensureUserProfile(user: User): Promise<void> {
 
 export async function signInWithGoogle(): Promise<void> {
   const provider = new GoogleAuthProvider();
-  const result = await signInWithPopup(auth, provider);
-  await ensureUserProfile(result.user);
-}
-
-export async function signInWithApple(): Promise<void> {
-  // Nécessite d'activer "Apple" dans Firebase Auth > Sign-in method
-  // et de configurer un Service ID Apple Developer (voir docs/firebase-setup-guide.md)
-  const provider = new OAuthProvider("apple.com");
   const result = await signInWithPopup(auth, provider);
   await ensureUserProfile(result.user);
 }

@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { MessageCircle } from "lucide-react";
 import CertaintyGauge from "@/components/ui/CertaintyGauge";
 import Button from "@/components/ui/Button";
+import SessionChat from "@/components/session/SessionChat";
 import { cancelSessionEntry } from "@/lib/firebase/sessions";
 import { useAuth } from "@/contexts/AuthContext";
 import type { RidingSession, Taxonomy } from "@/types";
@@ -26,6 +28,7 @@ export default function SessionCard({
 }) {
   const { user } = useAuth();
   const [cancelling, setCancelling] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const taxLabel = (id?: string | null) => (id ? taxonomies.find((t) => t.id === id)?.label : null);
 
@@ -91,17 +94,33 @@ export default function SessionCard({
         })}
       </ul>
 
-      <div className="mt-3">
+      <div className="mt-3 flex items-center gap-2">
         {myEntry ? (
-          <Button variant="ghost" onClick={handleCancel} disabled={cancelling} className="!px-0">
-            {cancelling ? "Annulation…" : "Annuler ma participation"}
-          </Button>
+          <>
+            <Button variant="ghost" onClick={handleCancel} disabled={cancelling} className="!px-0">
+              {cancelling ? "Annulation…" : "Annuler ma participation"}
+            </Button>
+            <button
+              onClick={() => setChatOpen(true)}
+              className="ml-auto flex items-center gap-1.5 rounded-full border border-track-border px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wide text-track-muted hover:text-track-white"
+            >
+              <MessageCircle size={14} /> Chat
+            </button>
+          </>
         ) : (
           <Button variant="secondary" onClick={onJoinClick} className="w-full">
             Je roule aussi
           </Button>
         )}
       </div>
+
+      {chatOpen && (
+        <SessionChat
+          sessionId={session.id}
+          sessionWindowEnd={session.windowEnd}
+          onClose={() => setChatOpen(false)}
+        />
+      )}
     </div>
   );
 }
