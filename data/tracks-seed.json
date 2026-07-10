@@ -1,0 +1,422 @@
+[
+  {
+    "id": "mini-racing-car-liege-mrcl",
+    "name": "Mini Racing Car Liège - MRCL",
+    "address": "",
+    "lat": 50.6520361,
+    "lng": 5.4629647,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-onroad"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.mrcl.be",
+    "website": "https://www.mrcl.be"
+  },
+  {
+    "id": "houthalens-racing-team",
+    "name": "Houthalens Racing Team",
+    "address": "",
+    "lat": 51.0402967,
+    "lng": 5.3896244,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-onroad"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://sites.google.com/site/clubhrt/",
+    "website": "https://sites.google.com/site/clubhrt/"
+  },
+  {
+    "id": "model-race-genk",
+    "name": "Model Race Genk",
+    "address": "",
+    "lat": 50.9868053,
+    "lng": 5.562894,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-onroad"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://modelracegenk.be/",
+    "website": "https://modelracegenk.be/"
+  },
+  {
+    "id": "model-auto-club-de-baanbrekers",
+    "name": "Model Auto Club de Baanbrekers",
+    "address": "",
+    "lat": 51.5394233,
+    "lng": 4.5702427,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-onroad"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.macdebaanbrekers.nl",
+    "website": "https://www.macdebaanbrekers.nl"
+  },
+  {
+    "id": "racing-club-roeselare-rcr",
+    "name": "Racing Club Roeselare - RCR",
+    "address": "",
+    "lat": 50.9442738,
+    "lng": 3.1726089,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-onroad"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.racingclubroeselare.be/",
+    "website": "https://www.racingclubroeselare.be/"
+  },
+  {
+    "id": "luxembourg-modell-car-club",
+    "name": "Luxembourg Modell Car Club",
+    "address": "",
+    "lat": 49.5807094,
+    "lng": 6.1297661,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-onroad"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.lmcc.lu/",
+    "website": "https://www.lmcc.lu/"
+  },
+  {
+    "id": "seraing-buggy-club-sbc",
+    "name": "Seraing Buggy Club SBC",
+    "address": "",
+    "lat": 50.59942,
+    "lng": 5.52939,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-tt"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://seraing-buggy-club.be",
+    "website": "https://seraing-buggy-club.be"
+  },
+  {
+    "id": "fun-rc",
+    "name": "Fun Rc",
+    "address": "",
+    "lat": 50.5723215,
+    "lng": 5.5954071,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-tt"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://funrc.be",
+    "website": "https://funrc.be"
+  },
+  {
+    "id": "tt-fays-rc-club",
+    "name": "TT Fays RC Club",
+    "address": "",
+    "lat": 50.5496124,
+    "lng": 5.8696572,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-tt"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.facebook.com/ttfaysclubmodelisme/?locale=fr_FR",
+    "website": "https://www.facebook.com/ttfaysclubmodelisme/?locale=fr_FR"
+  },
+  {
+    "id": "rc-racing-circuit-zolder-vzw",
+    "name": "RC racing@Circuit Zolder vzw",
+    "address": "",
+    "lat": 50.9919371,
+    "lng": 5.2589302,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-tt"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.rc-cz.be/circuit",
+    "website": "https://www.rc-cz.be/circuit"
+  },
+  {
+    "id": "off-road-racing-arendonk",
+    "name": "Off Road Racing Arendonk",
+    "address": "",
+    "lat": 51.3119338,
+    "lng": 5.0475307,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-tt"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : http://www.orra.be",
+    "website": "http://www.orra.be"
+  },
+  {
+    "id": "modelifun",
+    "name": "Modelifun",
+    "address": "",
+    "lat": 50.5637874,
+    "lng": 4.7987403,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-tt"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.modelifun.cd-web.be/",
+    "website": "https://www.modelifun.cd-web.be/"
+  },
+  {
+    "id": "mbv-kampenhout",
+    "name": "MBV Kampenhout",
+    "address": "",
+    "lat": 50.9465972,
+    "lng": 4.5859009,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-tt"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://mbv.be/",
+    "website": "https://mbv.be/"
+  },
+  {
+    "id": "hulshout-offroad-racing",
+    "name": "Hulshout Offroad racing",
+    "address": "",
+    "lat": 51.0708765,
+    "lng": 4.8248158,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-tt"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.rc-hor.be/",
+    "website": "https://www.rc-hor.be/"
+  },
+  {
+    "id": "buggy-rc-bauffe",
+    "name": "Buggy RC Bauffe",
+    "address": "",
+    "lat": 50.4439295,
+    "lng": 3.8725724,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-tt"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : http://www.facebook.com/groups/1118927849707196?locale=fr_FR",
+    "website": "http://www.facebook.com/groups/1118927849707196?locale=fr_FR"
+  },
+  {
+    "id": "undering-brussels-rc-offroad",
+    "name": "UndeRing - Brussels RC Offroad",
+    "address": "",
+    "lat": 50.824029,
+    "lng": 4.281096,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-tt"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://undering.jimdofree.com/",
+    "website": "https://undering.jimdofree.com/"
+  },
+  {
+    "id": "ejm-racing",
+    "name": "EJM-RACING",
+    "address": "",
+    "lat": 50.5595275,
+    "lng": 4.0415888,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-tt"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.ejm-racing.cd-web.be/",
+    "website": "https://www.ejm-racing.cd-web.be/"
+  },
+  {
+    "id": "buggittre-racing",
+    "name": "Bugg’Ittre Racing",
+    "address": "",
+    "lat": 50.6575756,
+    "lng": 4.3073086,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-tt"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://buggittre.be/",
+    "website": "https://buggittre.be/"
+  },
+  {
+    "id": "minizautoclub",
+    "name": "MiniZautoclub",
+    "address": "",
+    "lat": 50.5905522,
+    "lng": 5.7527936,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-indoor"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.minizautosclub.be/",
+    "website": "https://www.minizautosclub.be/"
+  },
+  {
+    "id": "mkr-arena",
+    "name": "MKR ARENA",
+    "address": "",
+    "lat": 50.4589013,
+    "lng": 4.7144663,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-indoor"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "",
+    "website": null
+  },
+  {
+    "id": "miniatuur-racing-club-zwevegem-vzw",
+    "name": "Miniatuur Racing Club Zwevegem vzw",
+    "address": "",
+    "lat": 50.8159379,
+    "lng": 3.3523108,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-indoor"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.mrcz.be",
+    "website": "https://www.mrcz.be"
+  },
+  {
+    "id": "mrch-havre",
+    "name": "MRCH havré",
+    "address": "",
+    "lat": 50.4616849,
+    "lng": 4.0465705,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-indoor"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.facebook.com/mrch.havre/?locale=fr_FR",
+    "website": "https://www.facebook.com/mrch.havre/?locale=fr_FR"
+  },
+  {
+    "id": "funcar-modelisme",
+    "name": "FunCar modélisme",
+    "address": "",
+    "lat": 50.7148559,
+    "lng": 5.0325405,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-indoor"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.funcarmodelisme.be/",
+    "website": "https://www.funcarmodelisme.be/"
+  },
+  {
+    "id": "kuruma-drift-crew",
+    "name": "Kuruma Drift Crew",
+    "address": "",
+    "lat": 50.7628436,
+    "lng": 5.6802649,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-indoor"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.facebook.com/groups/661351947735917?locale=fr_FR",
+    "website": "https://www.facebook.com/groups/661351947735917?locale=fr_FR"
+  },
+  {
+    "id": "crawler-monster",
+    "name": "Crawler Monster",
+    "address": "",
+    "lat": 50.3837377,
+    "lng": 4.1439731,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-crawler"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.facebook.com/groups/243566190615096?locale=fr_FR",
+    "website": "https://www.facebook.com/groups/243566190615096?locale=fr_FR"
+  },
+  {
+    "id": "fun-rc-crawler",
+    "name": "Fun Rc Crawler",
+    "address": "",
+    "lat": 50.5718718,
+    "lng": 5.5953052,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-crawler"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.facebook.com/groups/1496849487267587",
+    "website": "https://www.facebook.com/groups/1496849487267587"
+  },
+  {
+    "id": "mcc-chaufour",
+    "name": "MCC chaufour",
+    "address": "",
+    "lat": 50.480112,
+    "lng": 4.3038854,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-crawler"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://www.mcchaufour.be/",
+    "website": "https://www.mcchaufour.be/"
+  },
+  {
+    "id": "rc-crawlerpark-deinze",
+    "name": "Rc-crawlerpark Deinze",
+    "address": "",
+    "lat": 50.9630761,
+    "lng": 3.4636796,
+    "surfaceIds": [],
+    "disciplineIds": [
+      "discipline-crawler"
+    ],
+    "scaleIds": [],
+    "photoURL": null,
+    "description": "Site : https://rc-crawlerpark.be/fr",
+    "website": "https://rc-crawlerpark.be/fr"
+  }
+]

@@ -1,0 +1,57 @@
+[
+  {
+    "id": "discipline-tt",
+    "label": "TT (tout-terrain)",
+    "type": "discipline"
+  },
+  {
+    "id": "discipline-onroad",
+    "label": "Asphalte (on-road)",
+    "type": "discipline"
+  },
+  {
+    "id": "discipline-crawler",
+    "label": "Crawler (trial / scale)",
+    "type": "discipline"
+  },
+  {
+    "id": "discipline-indoor",
+    "label": "Indoor (en salle)",
+    "type": "discipline"
+  },
+  {
+    "id": "surface-terre",
+    "label": "Terre",
+    "type": "surface"
+  },
+  {
+    "id": "surface-asphalte",
+    "label": "Asphalte",
+    "type": "surface"
+  },
+  {
+    "id": "surface-moquette",
+    "label": "Moquette",
+    "type": "surface"
+  },
+  {
+    "id": "surface-rocher",
+    "label": "Rocher / obstacles",
+    "type": "surface"
+  },
+  {
+    "id": "scale-1-8",
+    "label": "1/8",
+    "type": "scale"
+  },
+  {
+    "id": "scale-1-10",
+    "label": "1/10",
+    "type": "scale"
+  },
+  {
+    "id": "scale-1-5",
+    "label": "1/5",
+    "type": "scale"
+  }
+]

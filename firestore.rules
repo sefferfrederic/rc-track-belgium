@@ -1,0 +1,82 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    // --- Utilisateurs ---
+    // Chacun lit tous les profils (nécessaire pour afficher pseudo/photo dans sessions, chat, notifs)
+    // mais ne peut modifier que le sien. Le champ "role" ne peut être changé que par un admin.
+    match /users/{uid} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(uid) && request.resource.data.role == "user";
+      allow update: if isOwner(uid) &&
+        (!("role" in request.resource.data) || request.resource.data.role == resource.data.role) ||
+        isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // --- Taxonomies dynamiques (disciplines / surfaces / échelles) ---
+    // Lecture libre, écriture réservée à l'admin.
+    match /taxonomies/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- Pistes ---
+    match /tracks/{trackId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- Sessions de roulage ---
+    // Tout utilisateur connecté peut créer/rejoindre. Il ne peut modifier/retirer
+    // que sa propre entrée dans le tableau "participants" (validé côté Cloud Function
+    // pour le regroupement — voir docs/architecture.md).
+    match /sessions/{sessionId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isSignedIn();
+
+      match /chat/{messageId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn() && request.resource.data.authorUid == request.auth.uid;
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    // --- Événements ---
+    match /events/{eventId} {
+      allow read: if true;
+      allow create, delete: if isAdmin();
+      // L'admin peut tout modifier ; un utilisateur connecté ne peut modifier
+      // que sa participation ("going"/"interested"), pas le contenu de l'événement.
+      allow update: if isAdmin() ||
+        (isSignedIn() &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(["going", "interested"]));
+    }
+
+    // --- Notifications ---
+    // Un utilisateur ne voit et ne modifie (marquer comme lu) que ses propres notifications.
+    // La création se fait uniquement côté serveur (Cloud Functions).
+    match /notifications/{notifId} {
+      allow read: if isOwner(resource.data.toUid);
+      allow update: if isOwner(resource.data.toUid) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(["read"]);
+      allow create, delete: if false; // réservé aux Cloud Functions (Admin SDK)
+    }
+  }
+}

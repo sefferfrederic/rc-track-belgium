@@ -1,0 +1,31 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Photo de profil: chacun peut lire, seul le propriétaire peut écrire la sienne
+    match /avatars/{uid} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Photos de pistes / événements: lecture publique, écriture réservée à l'admin
+    // (vérification du rôle admin faite côté Cloud Function avant génération de l'URL d'upload,
+    // ou via une règle Firestore-backed si besoin plus strict)
+    match /tracks/{trackId}/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.resource.size < 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    match /events/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.resource.size < 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+  }
+}
