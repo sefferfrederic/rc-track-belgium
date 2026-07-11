@@ -15,9 +15,9 @@ export default function TopBar() {
             <Home size={18} className="text-track-orange" />
           </span>
           {/* Remplace /public/logo.svg par le logo officiel fourni (garde le même nom de fichier) */}
-          <img src="/logo.svg" alt="RC Track Belgium Meeting" width={28} height={28} className="rounded-md" />
+          <img src="/logo.svg" alt="RC Tracks Belgium Meeting" width={28} height={28} className="rounded-md" />
           <span className="hidden font-display text-lg font-bold uppercase tracking-wide sm:inline">
-            RC Track <span className="text-gradient-flag">Belgium</span>
+            RC Tracks <span className="text-gradient-flag">Belgium</span>
           </span>
         </Link>
 

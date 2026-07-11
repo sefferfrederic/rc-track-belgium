@@ -1,4 +1,4 @@
-# Architecture — RC Track Belgium Meeting
+# Architecture — RC Tracks Belgium Meeting
 
 ## Stack technique
 

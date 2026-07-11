@@ -1,4 +1,4 @@
-# Schéma Firestore — RC Track Belgium Meeting
+# Schéma Firestore — RC Tracks Belgium Meeting
 
 Toutes les interfaces TypeScript correspondantes sont dans `src/types/index.ts`.
 

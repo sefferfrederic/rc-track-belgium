@@ -1,4 +1,4 @@
-// Types partagés de l'application RC Track Belgium Meeting
+// Types partagés de l'application RC Tracks Belgium Meeting
 // Voir docs/firestore-schema.md pour le détail de chaque collection Firestore
 
 export type UserRole = "admin" | "user";

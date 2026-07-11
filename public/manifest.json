@@ -1,6 +1,6 @@
 {
-  "name": "RC Track Belgium Meeting",
-  "short_name": "RC Track BE",
+  "name": "RC Tracks Belgium Meeting",
+  "short_name": "RC Tracks BE",
   "description": "Qui roule ? Où ? Quand ? Retrouve les pilotes RC de Belgique.",
   "start_url": "/",
   "display": "standalone",

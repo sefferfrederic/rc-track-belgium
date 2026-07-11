@@ -15,7 +15,7 @@ sans en sauter. Ça prend environ 20-30 minutes la première fois.
 ## Étape 2 — Créer l'application Web
 
 1. Sur la page d'accueil du projet, clique sur l'icône **`</>`** ("Web").
-2. Nom de l'app : `RC Track Belgium Meeting`.
+2. Nom de l'app : `RC Tracks Belgium Meeting`.
 3. Ne coche PAS "Firebase Hosting" pour l'instant (on verra ça au moment du déploiement).
 4. Clique sur **Enregistrer l'application**.
 5. Firebase affiche un bloc de code avec des valeurs comme `apiKey: "AIza..."`. **Garde cette page ouverte**,

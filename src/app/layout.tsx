@@ -15,7 +15,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-  title: "RC Track Belgium Meeting",
+  title: "RC Tracks Belgium Meeting",
   description: "Qui roule ? Où ? Quand ? Retrouve les pilotes RC de Belgique.",
   manifest: "/manifest.json",
   icons: { icon: "/logo.svg", apple: "/logo.svg" },

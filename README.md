@@ -1,4 +1,4 @@
-# RC Track Belgium Meeting
+# RC Tracks Belgium Meeting
 
 > Qui roule ? Où ? Quand ? Avec quel degré de certitude ?
 
