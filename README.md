@@ -30,6 +30,7 @@ sur quelle piste, et à quelle heure — pour arrêter de rouler chacun de son c
 ✅ Chat éphémère par session, réservé aux participants, supprimé automatiquement 48h après la fin
 ✅ Aperçu rapide des prochaines sessions sur la piste favorite (Accueil)
 ✅ Connexion Apple retirée (Google + Email uniquement)
+✅ Application bilingue FR/NL (bouton dans la barre du haut, choix mémorisé)
 ✅ Navigation complète
 
 ## À venir (voir `docs/architecture.md` pour le détail des phases)

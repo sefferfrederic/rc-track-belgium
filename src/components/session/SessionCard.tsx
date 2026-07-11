@@ -7,10 +7,11 @@ import Button from "@/components/ui/Button";
 import SessionChat from "@/components/session/SessionChat";
 import { cancelSessionEntry } from "@/lib/firebase/sessions";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { RidingSession, Taxonomy } from "@/types";
 
-function fmtTime(ts: number): string {
-  return new Date(ts).toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" });
+function fmtTime(ts: number, locale: "fr" | "nl"): string {
+  return new Date(ts).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" });
 }
 
 export default function SessionCard({
@@ -27,6 +28,7 @@ export default function SessionCard({
   onJoinClick: () => void;
 }) {
   const { user } = useAuth();
+  const { t, locale } = useLanguage();
   const [cancelling, setCancelling] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
 
@@ -51,8 +53,8 @@ export default function SessionCard({
         <div>
           <p className="font-display text-lg font-bold">{trackName}</p>
           <p className="text-sm text-track-muted">
-            {fmtTime(session.windowStart)} → {fmtTime(session.windowEnd)} ·{" "}
-            {session.participants.length} pilote{session.participants.length > 1 ? "s" : ""}
+            {fmtTime(session.windowStart, locale)} → {fmtTime(session.windowEnd, locale)} ·{" "}
+            {session.participants.length} {t("home_riders")}
           </p>
         </div>
         <div className="flex -space-x-2">
@@ -64,11 +66,11 @@ export default function SessionCard({
 
       {session.peakCount > 1 && session.peakStart && session.peakEnd && (
         <p className="mt-2 text-xs text-track-muted">
-          Pic de fréquentation{" "}
+          {t("session_peak")}{" "}
           <span className="text-track-white">
-            {fmtTime(session.peakStart)} → {fmtTime(session.peakEnd)}
+            {fmtTime(session.peakStart, locale)} → {fmtTime(session.peakEnd, locale)}
           </span>{" "}
-          ({session.peakCount} pilotes)
+          ({session.peakCount} {t("home_riders")})
         </p>
       )}
 
@@ -87,7 +89,7 @@ export default function SessionCard({
                 {tags && <span className="text-xs text-track-muted">({tags})</span>}
               </span>
               <span className="text-track-muted">
-                {fmtTime(p.start)} - {fmtTime(p.end)}
+                {fmtTime(p.start, locale)} - {fmtTime(p.end, locale)}
               </span>
             </li>
           );
@@ -98,18 +100,18 @@ export default function SessionCard({
         {myEntry ? (
           <>
             <Button variant="ghost" onClick={handleCancel} disabled={cancelling} className="!px-0">
-              {cancelling ? "Annulation…" : "Annuler ma participation"}
+              {cancelling ? t("session_cancelling") : t("session_cancel_participation")}
             </Button>
             <button
               onClick={() => setChatOpen(true)}
               className="ml-auto flex items-center gap-1.5 rounded-full bg-flag-gradient px-4 py-2 text-xs font-display font-bold uppercase tracking-wide text-track-bg shadow-glow"
             >
-              <MessageCircle size={15} strokeWidth={2.5} /> Chat
+              <MessageCircle size={15} strokeWidth={2.5} /> {t("session_chat")}
             </button>
           </>
         ) : (
           <Button variant="secondary" onClick={onJoinClick} className="w-full">
-            Je roule aussi
+            {t("session_join")}
           </Button>
         )}
       </div>

@@ -7,6 +7,7 @@ import CertaintyPicker from "@/components/session/CertaintyPicker";
 import { fetchTracks, fetchTaxonomies } from "@/lib/firebase/tracks";
 import { upsertSessionEntry } from "@/lib/firebase/sessions";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { todayDayKey } from "@/lib/date";
 import type { Track, Taxonomy, CertaintyLevel } from "@/types";
 
@@ -35,6 +36,7 @@ interface Props {
 
 export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, onSaved }: Props) {
   const { user, profile } = useAuth();
+  const { t, locale } = useLanguage();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [taxonomies, setTaxonomies] = useState<Taxonomy[]>([]);
   const [trackId, setTrackId] = useState(fixedTrackId ?? "");
@@ -85,7 +87,7 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
     const start = new Date(`${dayKey}T${startTime}:00`).getTime();
     const end = new Date(`${dayKey}T${endTime}:00`).getTime();
     if (end <= start) {
-      setError("L'heure de fin doit être après l'heure de début.");
+      setError(locale === "nl" ? "De eindtijd moet na de starttijd liggen." : "L'heure de fin doit être après l'heure de début.");
       return;
     }
     setSaving(true);
@@ -104,7 +106,7 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
       });
       onSaved();
     } catch {
-      setError("Impossible d'enregistrer la session, réessaie.");
+      setError(locale === "nl" ? "Kan de sessie niet opslaan, probeer opnieuw." : "Impossible d'enregistrer la session, réessaie.");
     } finally {
       setSaving(false);
     }
@@ -115,22 +117,22 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
       <div className="flex max-h-[90vh] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-t-xl2 border border-track-border bg-track-surface p-5 md:rounded-xl2">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-lg font-bold uppercase">
-            {fixedTrackId ? "Je roule aussi" : "Nouvelle session"}
+            {fixedTrackId ? t("session_join") : t("session_new")}
           </h2>
-          <button onClick={onClose} aria-label="Fermer">
+          <button onClick={onClose} aria-label={t("close")}>
             <X size={20} className="text-track-muted" />
           </button>
         </div>
 
         {fixedTrackId ? (
           <div className="rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm">
-            <span className="text-track-muted">Piste : </span>
+            <span className="text-track-muted">{t("session_track")} : </span>
             <span className="font-semibold text-track-white">{selectedTrack?.name ?? "…"}</span>
           </div>
         ) : (
           <div>
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
-              Piste
+              {t("session_track")}
             </label>
             <select
               value={trackId}
@@ -148,9 +150,9 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
 
         {fixedDayKey ? (
           <div className="rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm">
-            <span className="text-track-muted">Date : </span>
+            <span className="text-track-muted">{t("session_date")} : </span>
             <span className="font-semibold text-track-white">
-              {new Date(`${dayKey}T00:00:00`).toLocaleDateString("fr-BE", {
+              {new Date(`${dayKey}T00:00:00`).toLocaleDateString(locale === "nl" ? "nl-BE" : "fr-BE", {
                 weekday: "long",
                 day: "numeric",
                 month: "long",
@@ -160,7 +162,7 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
         ) : (
           <div>
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
-              Date
+              {t("session_date")}
             </label>
             <input
               type="date"
@@ -174,14 +176,14 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
         {disciplineOptions.length > 1 && (
           <div>
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
-              Discipline
+              {t("session_discipline")}
             </label>
             <select
               value={disciplineId}
               onChange={(e) => setDisciplineId(e.target.value)}
               className="w-full rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm outline-none focus:border-track-orange"
             >
-              <option value="">Non précisé</option>
+              <option value="">{t("session_not_specified")}</option>
               {disciplineOptions.map((d) => (
                 <option key={d.id} value={d.id}>
                   {d.label}
@@ -194,14 +196,14 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
         {scaleOptions.length > 1 && (
           <div>
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
-              Échelle
+              {t("session_scale")}
             </label>
             <select
               value={scaleId}
               onChange={(e) => setScaleId(e.target.value)}
               className="w-full rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm outline-none focus:border-track-orange"
             >
-              <option value="">Non précisée</option>
+              <option value="">{t("session_not_specified")}</option>
               {scaleOptions.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.label}
@@ -214,7 +216,7 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
         <div className="flex gap-3">
           <div className="flex-1">
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
-              Début
+              {t("session_start")}
             </label>
             <input
               type="time"
@@ -225,7 +227,7 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
           </div>
           <div className="flex-1">
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
-              Fin
+              {t("session_end")}
             </label>
             <input
               type="time"
@@ -241,7 +243,7 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
         {error && <p className="text-sm text-track-red">{error}</p>}
 
         <Button onClick={handleSubmit} disabled={saving || !trackId} className="w-full">
-          {saving ? "Enregistrement…" : "Valider ma session"}
+          {saving ? t("session_saving") : t("session_validate")}
         </Button>
       </div>
     </div>

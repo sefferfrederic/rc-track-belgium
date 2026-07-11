@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
 import SessionFormModal from "@/components/session/SessionFormModal";
 import { fetchTracks, fetchTaxonomies } from "@/lib/firebase/tracks";
@@ -17,6 +18,7 @@ const DISCIPLINE_COLORS: Record<string, string> = {
 
 export default function PistesPage() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [disciplines, setDisciplines] = useState<Taxonomy[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,13 +47,13 @@ export default function PistesPage() {
           <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-track-orange">
             Belgique
           </p>
-          <h1 className="mt-1 font-display text-2xl font-bold">Pistes</h1>
+          <h1 className="mt-1 font-display text-2xl font-bold">{t("tracks_title")}</h1>
         </div>
         <Link
           href="/carte"
           className="rounded-full border border-track-border px-3 py-1.5 font-display text-xs font-semibold uppercase tracking-wide text-track-muted hover:text-track-white"
         >
-          Voir sur la carte
+          {t("tracks_view_map")}
         </Link>
       </div>
 
@@ -62,7 +64,7 @@ export default function PistesPage() {
             active === null ? "border-track-orange bg-track-orange/10 text-track-white" : "border-track-border text-track-muted"
           }`}
         >
-          Toutes ({tracks.length})
+          {t("map_all")} ({tracks.length})
         </button>
         {disciplines.map((d) => (
           <button
@@ -79,7 +81,7 @@ export default function PistesPage() {
       </div>
 
       {loading ? (
-        <p className="pt-8 text-center text-sm text-track-muted">Chargement des pistes…</p>
+        <p className="pt-8 text-center text-sm text-track-muted">{t("map_loading")}</p>
       ) : (
         <ul className="flex flex-col gap-2">
           {filtered.map((track) => (
@@ -109,7 +111,7 @@ export default function PistesPage() {
                     rel="noopener noreferrer"
                     className="shrink-0 rounded-full border border-track-border px-3 py-1.5 font-display text-xs font-semibold uppercase tracking-wide text-track-muted hover:text-track-white"
                   >
-                    Site du club
+                    {t("tracks_club_site")}
                   </a>
                 )}
               </div>
@@ -119,7 +121,7 @@ export default function PistesPage() {
                   className="mt-3 w-full"
                   onClick={() => setSessionTrackId(track.id)}
                 >
-                  Créer une session ici
+                  {t("tracks_create_session")}
                 </Button>
               )}
             </li>

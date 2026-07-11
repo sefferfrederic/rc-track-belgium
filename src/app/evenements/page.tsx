@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
 import { fetchEvents, setParticipation } from "@/lib/firebase/events";
 import { fetchTracks } from "@/lib/firebase/tracks";
@@ -9,6 +10,7 @@ import type { RcEvent, Track } from "@/types";
 
 export default function EvenementsPage() {
   const { user } = useAuth();
+  const { t, locale } = useLanguage();
   const [events, setEvents] = useState<RcEvent[]>([]);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,15 +44,13 @@ export default function EvenementsPage() {
         <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-track-orange">
           Belgique
         </p>
-        <h1 className="mt-1 font-display text-2xl font-bold">Événements</h1>
+        <h1 className="mt-1 font-display text-2xl font-bold">{t("events_title")}</h1>
       </div>
 
-      {loading && <p className="text-center text-sm text-track-muted">Chargement…</p>}
+      {loading && <p className="text-center text-sm text-track-muted">{t("home_loading")}</p>}
 
       {!loading && events.length === 0 && (
-        <p className="text-center text-sm text-track-muted">
-          Aucun événement à venir pour l&apos;instant.
-        </p>
+        <p className="text-center text-sm text-track-muted">{t("events_none")}</p>
       )}
 
       <div className="flex flex-col gap-3">
@@ -66,7 +66,7 @@ export default function EvenementsPage() {
                 <p className="font-display text-lg font-bold">{ev.title}</p>
                 <p className="text-sm text-track-muted">
                   {trackName(ev.trackId)} ·{" "}
-                  {new Date(ev.date).toLocaleString("fr-BE", {
+                  {new Date(ev.date).toLocaleString(locale === "nl" ? "nl-BE" : "fr-BE", {
                     dateStyle: "medium",
                     timeStyle: "short",
                   })}
@@ -79,7 +79,7 @@ export default function EvenementsPage() {
                     rel="noopener noreferrer"
                     className="mt-2 inline-block text-xs font-semibold text-track-orange underline"
                   >
-                    Plus d&apos;infos →
+                    {t("events_more_info")}
                   </a>
                 )}
                 <p className="mt-2 text-xs text-track-muted">
@@ -92,17 +92,17 @@ export default function EvenementsPage() {
                       variant={isGoing ? "primary" : "secondary"}
                       onClick={() => handleParticipation(ev.id, isGoing ? "none" : "going")}
                     >
-                      Je participe
+                      {t("events_going")}
                     </Button>
                     <Button
                       variant={isInterested ? "primary" : "secondary"}
                       onClick={() => handleParticipation(ev.id, isInterested ? "none" : "interested")}
                     >
-                      Je suis intéressé
+                      {t("events_interested")}
                     </Button>
                   </div>
                 ) : (
-                  <p className="mt-3 text-xs text-track-muted">Connecte-toi pour participer.</p>
+                  <p className="mt-3 text-xs text-track-muted">{t("events_login_prompt")}</p>
                 )}
               </div>
             </div>

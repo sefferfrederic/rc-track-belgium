@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { X, Send } from "lucide-react";
 import { sendChatMessage, listenChatMessages, cleanupExpiredMessages } from "@/lib/firebase/chat";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { ChatMessage } from "@/types";
 
 export default function SessionChat({
@@ -16,6 +17,7 @@ export default function SessionChat({
   onClose: () => void;
 }) {
   const { user, profile } = useAuth();
+  const { t } = useLanguage();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
@@ -54,21 +56,17 @@ export default function SessionChat({
       <div className="flex h-[80vh] w-full max-w-md flex-col overflow-hidden rounded-t-xl2 border border-track-border bg-track-surface md:h-[70vh] md:rounded-xl2">
         <div className="flex items-center justify-between border-b border-track-border p-4">
           <div>
-            <h2 className="font-display text-lg font-bold uppercase">Chat de session</h2>
-            <p className="text-xs text-track-muted">
-              Visible uniquement par les participants — supprimé 48h après la fin de la session.
-            </p>
+            <h2 className="font-display text-lg font-bold uppercase">{t("session_chat_title")}</h2>
+            <p className="text-xs text-track-muted">{t("session_chat_hint")}</p>
           </div>
-          <button onClick={onClose} aria-label="Fermer">
+          <button onClick={onClose} aria-label={t("close")}>
             <X size={20} className="text-track-muted" />
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
           {messages.length === 0 && (
-            <p className="pt-8 text-center text-sm text-track-muted">
-              Aucun message pour l&apos;instant. Sois le premier à écrire !
-            </p>
+            <p className="pt-8 text-center text-sm text-track-muted">{t("session_chat_empty")}</p>
           )}
           <div className="flex flex-col gap-3">
             {messages.map((m) => {
@@ -97,13 +95,13 @@ export default function SessionChat({
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Écris un message…"
+            placeholder={t("session_chat_placeholder")}
             className="flex-1 rounded-full border border-track-border bg-track-surface2 px-4 py-2.5 text-sm outline-none focus:border-track-orange"
           />
           <button
             onClick={handleSend}
             disabled={sending || !text.trim()}
-            aria-label="Envoyer"
+            aria-label={t("session_chat")}
             className="flex items-center justify-center rounded-full bg-flag-gradient px-4 text-track-bg disabled:opacity-40"
           >
             <Send size={18} />

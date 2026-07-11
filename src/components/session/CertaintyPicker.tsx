@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import CertaintyGauge from "@/components/ui/CertaintyGauge";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { CertaintyLevel } from "@/types";
 
 const LEVELS: CertaintyLevel[] = [25, 50, 75, 100];
@@ -11,10 +12,11 @@ export default function CertaintyPicker({
   value: CertaintyLevel;
   onChange: (v: CertaintyLevel) => void;
 }) {
+  const { t } = useLanguage();
   return (
     <div>
       <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-track-muted">
-        Taux de certitude
+        {t("session_certainty")}
       </p>
       <div className="flex justify-between gap-2">
         {LEVELS.map((level) => (

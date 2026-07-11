@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { signInWithGoogle, signInWithEmail, signUpWithEmail } from "@/lib/firebase/auth";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function LoginForm() {
   const router = useRouter();
+  const { t, locale } = useLanguage();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +23,7 @@ export default function LoginForm() {
       await fn();
       router.push("/profil");
     } catch (err) {
-      setError(err instanceof Error ? traduireErreur(err.message) : "Une erreur est survenue.");
+      setError(err instanceof Error ? traduireErreur(err.message, locale) : (locale === "nl" ? "Er is een fout opgetreden." : "Une erreur est survenue."));
     } finally {
       setLoading(false);
     }
@@ -29,34 +31,34 @@ export default function LoginForm() {
 
   return (
     <div className="mx-auto flex max-w-sm flex-col gap-4 pt-6">
-      <h1 className="text-center font-display text-2xl font-bold uppercase">Connexion</h1>
+      <h1 className="text-center font-display text-2xl font-bold uppercase">{t("login_title")}</h1>
 
       <Button variant="secondary" disabled={loading} onClick={() => withLoading(signInWithGoogle)}>
-        Continuer avec Google
+        {t("login_google")}
       </Button>
 
       <div className="my-2 flex items-center gap-3 text-xs uppercase text-track-muted">
-        <span className="h-px flex-1 bg-track-border" /> ou <span className="h-px flex-1 bg-track-border" />
+        <span className="h-px flex-1 bg-track-border" /> {t("login_or")} <span className="h-px flex-1 bg-track-border" />
       </div>
 
       {mode === "signup" && (
         <input
           className="rounded-lg border border-track-border bg-track-surface px-4 py-3 text-sm outline-none focus:border-track-orange"
-          placeholder="Pseudo ou prénom"
+          placeholder={t("login_nickname")}
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
         />
       )}
       <input
         className="rounded-lg border border-track-border bg-track-surface px-4 py-3 text-sm outline-none focus:border-track-orange"
-        placeholder="Email"
+        placeholder={t("login_email")}
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <input
         className="rounded-lg border border-track-border bg-track-surface px-4 py-3 text-sm outline-none focus:border-track-orange"
-        placeholder="Mot de passe"
+        placeholder={t("login_password")}
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
@@ -66,11 +68,11 @@ export default function LoginForm() {
 
       {mode === "signin" ? (
         <Button disabled={loading} onClick={() => withLoading(() => signInWithEmail(email, password))}>
-          Se connecter
+          {t("login_signin")}
         </Button>
       ) : (
         <Button disabled={loading} onClick={() => withLoading(() => signUpWithEmail(email, password, displayName))}>
-          Créer mon compte
+          {t("login_signup")}
         </Button>
       )}
 
@@ -79,21 +81,35 @@ export default function LoginForm() {
         className="text-center text-sm text-track-muted underline underline-offset-4"
         onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
       >
-        {mode === "signin" ? "Pas encore de compte ? Inscris-toi" : "Déjà un compte ? Connecte-toi"}
+        {mode === "signin" ? t("login_no_account") : t("login_has_account")}
       </button>
     </div>
   );
 }
 
-function traduireErreur(message: string): string {
+function traduireErreur(message: string, locale: "fr" | "nl"): string {
+  const fr = {
+    badCred: "Email ou mot de passe incorrect.",
+    inUse: "Un compte existe déjà avec cet email.",
+    weak: "Le mot de passe doit contenir au moins 6 caractères.",
+    other: "Une erreur est survenue, réessaie.",
+  };
+  const nl = {
+    badCred: "E-mail of wachtwoord onjuist.",
+    inUse: "Er bestaat al een account met dit e-mailadres.",
+    weak: "Het wachtwoord moet minstens 6 tekens bevatten.",
+    other: "Er is een fout opgetreden, probeer opnieuw.",
+  };
+  const msgs = locale === "nl" ? nl : fr;
   if (message.includes("auth/invalid-credential") || message.includes("auth/wrong-password")) {
-    return "Email ou mot de passe incorrect.";
+    return msgs.badCred;
   }
   if (message.includes("auth/email-already-in-use")) {
-    return "Un compte existe déjà avec cet email.";
+    return msgs.inUse;
   }
   if (message.includes("auth/weak-password")) {
-    return "Le mot de passe doit contenir au moins 6 caractères.";
+    return msgs.weak;
   }
-  return "Une erreur est survenue, réessaie.";
+  return msgs.other;
 }
+

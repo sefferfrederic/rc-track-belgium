@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
 import SessionCard from "@/components/session/SessionCard";
 import SessionFormModal from "@/components/session/SessionFormModal";
@@ -12,8 +13,8 @@ import { fetchEvents, setParticipation } from "@/lib/firebase/events";
 import { todayDayKey, addMonths, monthStartKey, monthEndKey, toDayKey } from "@/lib/date";
 import type { RidingSession, Track, RcEvent, Taxonomy } from "@/types";
 
-function formatDayLabel(dayKey: string): string {
-  const label = new Date(`${dayKey}T00:00:00`).toLocaleDateString("fr-BE", {
+function formatDayLabel(dayKey: string, locale: "fr" | "nl"): string {
+  const label = new Date(`${dayKey}T00:00:00`).toLocaleDateString(locale === "nl" ? "nl-BE" : "fr-BE", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -23,6 +24,7 @@ function formatDayLabel(dayKey: string): string {
 
 export default function AgendaPage() {
   const { user } = useAuth();
+  const { t, locale } = useLanguage();
   const [monthDayKey, setMonthDayKey] = useState(todayDayKey());
   const [selectedDayKey, setSelectedDayKey] = useState(todayDayKey());
   const [sessions, setSessions] = useState<RidingSession[]>([]);
@@ -99,22 +101,22 @@ export default function AgendaPage() {
         <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-track-orange">
           Agenda
         </p>
-        <h1 className="mt-1 font-display text-2xl font-bold">Qui roule ce mois-ci ?</h1>
+        <h1 className="mt-1 font-display text-2xl font-bold">{t("agenda_title")}</h1>
       </div>
 
       <div>
         <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
-          Piste
+          {t("agenda_track_label")}
         </label>
         <select
           value={trackFilter}
           onChange={(e) => setTrackFilter(e.target.value)}
           className="w-full rounded-lg border border-track-border bg-track-surface px-4 py-3 text-sm outline-none focus:border-track-orange"
         >
-          <option value="">Toutes les pistes</option>
-          {tracks.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
+          <option value="">{t("agenda_track_all")}</option>
+          {tracks.map((tr) => (
+            <option key={tr.id} value={tr.id}>
+              {tr.name}
             </option>
           ))}
         </select>
@@ -132,7 +134,7 @@ export default function AgendaPage() {
 
       <div className="flex items-center justify-between">
         <h2 className="font-display text-sm font-bold uppercase tracking-wide">
-          {formatDayLabel(selectedDayKey)}
+          {formatDayLabel(selectedDayKey, locale)}
         </h2>
         {user && (
           <Button
@@ -141,15 +143,15 @@ export default function AgendaPage() {
               setModalOpen(true);
             }}
           >
-            Nouvelle session
+            {t("session_new")}
           </Button>
         )}
       </div>
 
-      {loading && <p className="text-center text-sm text-track-muted">Chargement…</p>}
+      {loading && <p className="text-center text-sm text-track-muted">{t("home_loading")}</p>}
 
       {!loading && selectedDaySessions.length === 0 && selectedDayEvents.length === 0 && (
-        <p className="text-center text-sm text-track-muted">Rien de prévu ce jour-là.</p>
+        <p className="text-center text-sm text-track-muted">{t("agenda_nothing")}</p>
       )}
 
       <div className="flex flex-col gap-3">
@@ -176,12 +178,12 @@ export default function AgendaPage() {
               className="rounded-xl2 border border-track-red/40 bg-track-surface p-4"
             >
               <p className="font-display text-xs font-semibold uppercase tracking-wide text-track-red">
-                Événement
+                {t("agenda_legend_event")}
               </p>
               <p className="mt-1 font-display text-base font-bold">{ev.title}</p>
               <p className="text-sm text-track-muted">
                 {trackName(ev.trackId)} ·{" "}
-                {new Date(ev.date).toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" })}
+                {new Date(ev.date).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
               </p>
               {ev.description && <p className="mt-2 text-sm text-track-white">{ev.description}</p>}
               {user && (
@@ -190,13 +192,13 @@ export default function AgendaPage() {
                     variant={isGoing ? "primary" : "secondary"}
                     onClick={() => handleParticipation(ev.id, isGoing ? "none" : "going")}
                   >
-                    Je participe
+                    {t("events_going")}
                   </Button>
                   <Button
                     variant={isInterested ? "primary" : "secondary"}
                     onClick={() => handleParticipation(ev.id, isInterested ? "none" : "interested")}
                   >
-                    Je suis intéressé
+                    {t("events_interested")}
                   </Button>
                 </div>
               )}

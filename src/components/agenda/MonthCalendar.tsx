@@ -3,8 +3,12 @@
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { toDayKey, todayDayKey } from "@/lib/date";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-const WEEKDAY_LABELS = ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"];
+const WEEKDAY_LABELS: Record<"fr" | "nl", string[]> = {
+  fr: ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"],
+  nl: ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"],
+};
 
 interface DayCell {
   dayKey: string;
@@ -48,9 +52,10 @@ export default function MonthCalendar({
   onPrevMonth: () => void;
   onNextMonth: () => void;
 }) {
+  const { t, locale } = useLanguage();
   const cells = buildMonthGrid(monthDayKey);
   const [labelYear, labelMonth] = monthDayKey.split("-").map(Number);
-  const monthLabel = new Date(labelYear, labelMonth - 1, 1).toLocaleDateString("fr-BE", {
+  const monthLabel = new Date(labelYear, labelMonth - 1, 1).toLocaleDateString(locale === "nl" ? "nl-BE" : "fr-BE", {
     month: "long",
     year: "numeric",
   });
@@ -59,20 +64,20 @@ export default function MonthCalendar({
   return (
     <div className="rounded-xl2 border border-track-border bg-track-surface p-3">
       <div className="mb-3 flex items-center justify-between">
-        <button onClick={onPrevMonth} aria-label="Mois précédent">
+        <button onClick={onPrevMonth} aria-label={locale === "nl" ? "Vorige maand" : "Mois précédent"}>
           <ChevronLeft className="text-track-muted" />
         </button>
         <span className="font-display text-sm font-bold uppercase tracking-wide">
           {monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1)}
         </span>
-        <button onClick={onNextMonth} aria-label="Mois suivant">
+        <button onClick={onNextMonth} aria-label={locale === "nl" ? "Volgende maand" : "Mois suivant"}>
           <ChevronRight className="text-track-muted" />
         </button>
       </div>
 
       <div className="grid grid-cols-7 gap-1 text-center">
-        {WEEKDAY_LABELS.map((w) => (
-          <span key={w} className="pb-1 text-[0.65rem] font-semibold uppercase text-track-muted">
+        {WEEKDAY_LABELS[locale].map((w, i) => (
+          <span key={i} className="pb-1 text-[0.65rem] font-semibold uppercase text-track-muted">
             {w}
           </span>
         ))}
@@ -114,13 +119,13 @@ export default function MonthCalendar({
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-[0.65rem] text-track-muted">
         <span className="flex items-center gap-1">
-          <span className="inline-block h-2.5 w-2.5 rounded bg-track-surface2" /> Personne
+          <span className="inline-block h-2.5 w-2.5 rounded bg-track-surface2" /> {t("agenda_legend_none")}
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block h-2.5 w-2.5 rounded bg-flag-gradient" /> Ça roule (nombre de pilotes)
+          <span className="inline-block h-2.5 w-2.5 rounded bg-flag-gradient" /> {t("agenda_legend_riding")}
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-track-red" /> Événement
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-track-red" /> {t("agenda_legend_event")}
         </span>
       </div>
     </div>

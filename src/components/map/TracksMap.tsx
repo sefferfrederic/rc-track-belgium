@@ -6,6 +6,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { fetchTracks, fetchTaxonomies } from "@/lib/firebase/tracks";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import SessionFormModal from "@/components/session/SessionFormModal";
 import type { Track, Taxonomy } from "@/types";
 
@@ -38,6 +39,7 @@ function markerIcon(color: string) {
 
 export default function TracksMap() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [taxonomies, setTaxonomies] = useState<Taxonomy[]>([]);
@@ -81,7 +83,7 @@ export default function TracksMap() {
               : "border-track-border text-track-muted"
           }`}
         >
-          Toutes ({tracks.length})
+          {t("map_all")} ({tracks.length})
         </button>
         {taxonomies.map((tax) => {
           const count = tracks.filter((t) => t.disciplineIds.includes(tax.id)).length;
@@ -108,7 +110,7 @@ export default function TracksMap() {
       <div className="h-[60vh] w-full overflow-hidden rounded-xl2 border border-track-border">
         {loading ? (
           <div className="flex h-full items-center justify-center text-sm text-track-muted">
-            Chargement des pistes…
+            {t("map_loading")}
           </div>
         ) : (
           <MapContainer
@@ -138,14 +140,14 @@ export default function TracksMap() {
                           rel="noopener noreferrer"
                           className="mt-2 inline-block text-xs font-semibold text-track-orange underline"
                         >
-                          Voir le site du club →
+                          {t("map_website")}
                         </a>
                       )}
                       <button
                         onClick={() => handleCreateHere(track.id)}
                         className="mt-3 w-full rounded-full bg-flag-gradient px-3 py-2 text-xs font-display font-semibold uppercase tracking-wide text-track-bg"
                       >
-                        Créer une session ici
+                        {t("map_create_here")}
                       </button>
                     </div>
                   </Popup>

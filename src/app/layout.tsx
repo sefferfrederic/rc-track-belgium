@@ -3,6 +3,7 @@ import { Rajdhani, Inter, JetBrains_Mono } from "next/font/google";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import BottomNav from "@/components/layout/BottomNav";
 import TopBar from "@/components/layout/TopBar";
 
@@ -32,13 +33,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" className={`${rajdhani.variable} ${inter.variable} ${mono.variable}`}>
       <body>
-        <AuthProvider>
-          <TopBar />
-          <main className="mx-auto min-h-[calc(100dvh-64px-72px)] w-full max-w-3xl px-4 pb-8 pt-4 md:px-6">
-            {children}
-          </main>
-          <BottomNav />
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <TopBar />
+            <main className="mx-auto min-h-[calc(100dvh-64px-72px)] w-full max-w-3xl px-4 pb-8 pt-4 md:px-6">
+              {children}
+            </main>
+            <BottomNav />
+          </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

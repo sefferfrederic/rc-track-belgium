@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
 import SessionCard from "@/components/session/SessionCard";
 import SessionFormModal from "@/components/session/SessionFormModal";
@@ -13,6 +14,7 @@ import type { RidingSession, Track, Taxonomy } from "@/types";
 
 export default function HomePage() {
   const { user, profile } = useAuth();
+  const { t, locale } = useLanguage();
   const [sessions, setSessions] = useState<RidingSession[]>([]);
   const [favoriteSessions, setFavoriteSessions] = useState<RidingSession[]>([]);
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -58,12 +60,9 @@ export default function HomePage() {
           Belgique · Modélisme RC
         </p>
         <h1 className="mt-2 font-display text-4xl font-bold leading-tight">
-          Qui roule. <span className="text-gradient-flag">Où. Quand.</span>
+          {t("home_tagline_1")} <span className="text-gradient-flag">{t("home_tagline_2")}</span>
         </h1>
-        <p className="mt-3 max-w-md text-track-muted">
-          Indique ta session en 3 clics et retrouve les autres pilotes de ta piste favorite,
-          au lieu de rouler chacun de son côté.
-        </p>
+        <p className="mt-3 max-w-md text-track-muted">{t("home_subtitle")}</p>
         <div className="mt-6 flex gap-3">
           {user ? (
             <Button
@@ -72,15 +71,15 @@ export default function HomePage() {
                 setModalOpen(true);
               }}
             >
-              Nouvelle session
+              {t("home_new_session")}
             </Button>
           ) : (
             <Link href="/login">
-              <Button>Se connecter pour rouler</Button>
+              <Button>{t("home_login_to_ride")}</Button>
             </Link>
           )}
           <Link href="/carte">
-            <Button variant="secondary">Voir la carte</Button>
+            <Button variant="secondary">{t("home_view_map")}</Button>
           </Link>
         </div>
       </section>
@@ -88,12 +87,10 @@ export default function HomePage() {
       {user && profile?.favoriteTrackId && (
         <section>
           <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-track-muted">
-            Ta piste favorite — {trackName(profile.favoriteTrackId)}
+            {t("home_favorite_track")} — {trackName(profile.favoriteTrackId)}
           </h2>
           {favoriteSessions.length === 0 ? (
-            <p className="mt-3 text-sm text-track-muted">
-              Rien de prévu prochainement sur ta piste favorite.
-            </p>
+            <p className="mt-3 text-sm text-track-muted">{t("home_favorite_none")}</p>
           ) : (
             <ul className="mt-3 flex flex-col gap-2">
               {favoriteSessions.map((s) => (
@@ -102,19 +99,19 @@ export default function HomePage() {
                   className="flex items-center justify-between rounded-xl2 border border-track-border bg-track-surface p-3 text-sm"
                 >
                   <span className="font-semibold">
-                    {new Date(`${s.dayKey}T00:00:00`).toLocaleDateString("fr-BE", {
+                    {new Date(`${s.dayKey}T00:00:00`).toLocaleDateString(locale === "nl" ? "nl-BE" : "fr-BE", {
                       weekday: "short",
                       day: "numeric",
                       month: "short",
                     })}
                   </span>
                   <span className="text-track-muted">
-                    {new Date(s.windowStart).toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" })}
+                    {new Date(s.windowStart).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
                     {" → "}
-                    {new Date(s.windowEnd).toLocaleTimeString("fr-BE", { hour: "2-digit", minute: "2-digit" })}
+                    {new Date(s.windowEnd).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
                   </span>
                   <span className="text-track-orange">
-                    {s.participants.length} pilote{s.participants.length > 1 ? "s" : ""}
+                    {s.participants.length} {t("home_riders")}
                   </span>
                 </li>
               ))}
@@ -125,21 +122,15 @@ export default function HomePage() {
 
       <section>
         <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-track-muted">
-          Aujourd&apos;hui
+          {t("home_today")}
         </h2>
 
-        {!user && (
-          <p className="mt-3 text-sm text-track-muted">
-            Connecte-toi pour voir qui roule aujourd&apos;hui et déclarer ta session.
-          </p>
-        )}
+        {!user && <p className="mt-3 text-sm text-track-muted">{t("home_login_prompt")}</p>}
 
-        {user && loading && <p className="mt-3 text-sm text-track-muted">Chargement…</p>}
+        {user && loading && <p className="mt-3 text-sm text-track-muted">{t("home_loading")}</p>}
 
         {user && !loading && sessions.length === 0 && (
-          <p className="mt-3 text-sm text-track-muted">
-            Personne n&apos;a encore déclaré de session aujourd&apos;hui. Sois le premier !
-          </p>
+          <p className="mt-3 text-sm text-track-muted">{t("home_no_sessions")}</p>
         )}
 
         <div className="mt-3 flex flex-col gap-3">
