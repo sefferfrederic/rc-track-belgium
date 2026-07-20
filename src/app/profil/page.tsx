@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "@/lib/firebase/client";
@@ -10,17 +10,29 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { fetchTracks } from "@/lib/firebase/tracks";
 import Button from "@/components/ui/Button";
+import SuggestionModal from "@/components/suggestions/SuggestionModal";
 import Link from "next/link";
 import type { Track } from "@/types";
 
 export default function ProfilPage() {
+  return (
+    <Suspense fallback={<p className="pt-8 text-center text-track-muted">…</p>}>
+      <ProfilPageInner />
+    </Suspense>
+  );
+}
+
+function ProfilPageInner() {
   const { user, profile, loading } = useAuth();
   const { t, locale } = useLanguage();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isWelcome = searchParams.get("bienvenue") === "1";
   const [displayName, setDisplayName] = useState("");
   const [tracks, setTracks] = useState<Track[]>([]);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [suggestionOpen, setSuggestionOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) router.push("/login");
@@ -70,6 +82,19 @@ export default function ProfilPage() {
 
   return (
     <div className="mx-auto flex max-w-sm flex-col items-center gap-6 pt-6">
+      {isWelcome && (
+        <div className="w-full rounded-xl2 border border-track-orange/40 bg-track-orange/10 p-4 text-sm">
+          <p className="font-display font-bold uppercase text-track-white">
+            {locale === "nl" ? "Welkom! 👋" : "Bienvenue ! 👋"}
+          </p>
+          <p className="mt-1 text-track-muted">
+            {locale === "nl"
+              ? "Kies hieronder een bijnaam — dit is wat de andere piloten zullen zien, nooit je e-mailadres."
+              : "Choisis un pseudo ci-dessous — c'est ce que les autres pilotes verront, jamais ton adresse email."}
+          </p>
+        </div>
+      )}
+
       <label className="group relative cursor-pointer">
         <img
           src={profile.photoURL ?? "/logo.svg"}
@@ -135,6 +160,10 @@ export default function ProfilPage() {
         </Link>
       )}
 
+      <Button variant="secondary" onClick={() => setSuggestionOpen(true)} className="w-full">
+        💡 {locale === "nl" ? "Suggestie / Vraag" : "Suggestion / Question"}
+      </Button>
+
       {message && <p className="text-sm text-track-orange">{message}</p>}
 
       <Button onClick={handleSave} disabled={saving} className="w-full">
@@ -143,6 +172,8 @@ export default function ProfilPage() {
       <Button variant="ghost" onClick={() => signOut().then(() => router.push("/"))}>
         {t("profile_logout")}
       </Button>
+
+      {suggestionOpen && <SuggestionModal onClose={() => setSuggestionOpen(false)} />}
     </div>
   );
 }

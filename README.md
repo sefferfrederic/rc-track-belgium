@@ -31,6 +31,8 @@ sur quelle piste, et à quelle heure — pour arrêter de rouler chacun de son c
 ✅ Aperçu rapide des prochaines sessions sur la piste favorite (Accueil)
 ✅ Connexion Apple retirée (Google + Email uniquement)
 ✅ Application bilingue FR/NL (bouton dans la barre du haut, choix mémorisé)
+✅ Pseudo obligatoire à l'inscription + prénom uniquement par défaut via Google (protection de la vie privée)
+✅ Bouton Suggestions/Question dans le Profil (ouvre un email pré-rempli vers l'administrateur)
 ✅ Navigation complète
 
 ## À venir (voir `docs/architecture.md` pour le détail des phases)

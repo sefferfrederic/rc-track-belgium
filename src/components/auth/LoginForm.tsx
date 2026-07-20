@@ -16,17 +16,29 @@ export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function withLoading(fn: () => Promise<void>) {
+  async function withLoading(fn: () => Promise<boolean | void>) {
     setError(null);
     setLoading(true);
     try {
-      await fn();
-      router.push("/profil");
+      const isFirstTime = await fn();
+      router.push(isFirstTime ? "/profil?bienvenue=1" : "/profil");
     } catch (err) {
       setError(err instanceof Error ? traduireErreur(err.message, locale) : (locale === "nl" ? "Er is een fout opgetreden." : "Une erreur est survenue."));
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleSignup() {
+    if (!displayName.trim()) {
+      setError(
+        locale === "nl"
+          ? "Kies een bijnaam — dit is wat andere piloten zullen zien."
+          : "Choisis un pseudo — c'est ce que les autres pilotes verront."
+      );
+      return;
+    }
+    withLoading(() => signUpWithEmail(email, password, displayName.trim()));
   }
 
   return (
@@ -71,7 +83,7 @@ export default function LoginForm() {
           {t("login_signin")}
         </Button>
       ) : (
-        <Button disabled={loading} onClick={() => withLoading(() => signUpWithEmail(email, password, displayName))}>
+        <Button disabled={loading} onClick={handleSignup}>
           {t("login_signup")}
         </Button>
       )}
