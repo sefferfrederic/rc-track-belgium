@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import SessionCard from "@/components/session/SessionCard";
 import SessionFormModal from "@/components/session/SessionFormModal";
 import MonthCalendar from "@/components/agenda/MonthCalendar";
+import WeatherForecast from "@/components/agenda/WeatherForecast";
 import { fetchSessionsForRange } from "@/lib/firebase/sessions";
 import { fetchTracks, fetchTaxonomies } from "@/lib/firebase/tracks";
 import { fetchEvents, setParticipation } from "@/lib/firebase/events";
@@ -121,6 +122,19 @@ export default function AgendaPage() {
           ))}
         </select>
       </div>
+
+      {trackFilter &&
+        (() => {
+          const selectedTrack = tracks.find((tr) => tr.id === trackFilter);
+          return selectedTrack ? (
+            <WeatherForecast
+              lat={selectedTrack.lat}
+              lng={selectedTrack.lng}
+              trackName={selectedTrack.name}
+              selectedDayKey={selectedDayKey}
+            />
+          ) : null;
+        })()}
 
       <MonthCalendar
         monthDayKey={monthDayKey}

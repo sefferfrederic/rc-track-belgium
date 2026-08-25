@@ -73,6 +73,7 @@ export const translations = {
   agenda_legend_none: { fr: "Personne", nl: "Niemand" },
   agenda_legend_riding: { fr: "Ça roule (nombre de pilotes)", nl: "Er wordt gereden (aantal piloten)" },
   agenda_legend_event: { fr: "Événement", nl: "Evenement" },
+  weather_title: { fr: "Météo à 3 jours", nl: "Weer voor 3 dagen" },
 
   // --- Carte ---
   map_title: { fr: "Toutes les pistes", nl: "Alle circuits" },

@@ -82,7 +82,9 @@ service cloud.firestore {
       // (empêche un tiers d'écrire dans le garage de quelqu'un d'autre).
       match /setups/{setupId} {
         allow read: if resource.data.isPublic == true ||
-          (isSignedIn() && (resource.data.authorUid == request.auth.uid || isAdmin()));
+          (request.auth != null && resource.data.authorUid == request.auth.uid) ||
+          (request.auth != null &&
+            get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin");
         allow create: if isSignedIn() &&
           request.resource.data.authorUid == request.auth.uid &&
           get(/databases/$(database)/documents/cars/$(carId)).data.ownerUid == request.auth.uid;
