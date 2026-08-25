@@ -67,6 +67,29 @@ service cloud.firestore {
       }
     }
 
+    // --- Mon Garage : voitures ---
+    // Une voiture n'appartient qu'à son propriétaire ; personne d'autre ne peut la lire
+    // (les réglages "publics" sont dénormalisés avec leur propre nom de voiture, donc
+    // pas besoin de lire le document voiture pour les afficher publiquement).
+    match /cars/{carId} {
+      allow read: if isSignedIn() && (resource.data.ownerUid == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && request.resource.data.ownerUid == request.auth.uid;
+      allow update, delete: if isSignedIn() && (resource.data.ownerUid == request.auth.uid || isAdmin());
+
+      // --- Fiches de réglages ---
+      // Visibles par leur auteur toujours, et par tout le monde si marquées publiques.
+      // Seul le propriétaire de LA VOITURE peut y ajouter/modifier des réglages
+      // (empêche un tiers d'écrire dans le garage de quelqu'un d'autre).
+      match /setups/{setupId} {
+        allow read: if resource.data.isPublic == true ||
+          (isSignedIn() && (resource.data.authorUid == request.auth.uid || isAdmin()));
+        allow create: if isSignedIn() &&
+          request.resource.data.authorUid == request.auth.uid &&
+          get(/databases/$(database)/documents/cars/$(carId)).data.ownerUid == request.auth.uid;
+        allow update, delete: if isSignedIn() && (resource.data.authorUid == request.auth.uid || isAdmin());
+      }
+    }
+
     // --- Événements ---
     match /events/{eventId} {
       allow read: if true;

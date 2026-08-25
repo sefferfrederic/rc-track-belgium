@@ -106,3 +106,42 @@ export interface AppNotification {
   read: boolean;
   createdAt: number;
 }
+
+// --- Mon Garage ---
+
+export interface Car {
+  id: string;
+  ownerUid: string;
+  ownerName: string;
+  name: string; // ex. "Buggy Losi 8IGHT"
+  disciplineId: string | null;
+  scaleId: string | null;
+  photoURL: string | null;
+  createdAt: number;
+}
+
+export type Weather = "sec" | "nuageux" | "pluie";
+export type GripLevel = "fort" | "moyen" | "glissant";
+
+export interface CarSetup {
+  id: string;
+  carId: string;
+  carName: string; // dénormalisé pour l'affichage public sans devoir lire la voiture privée
+  authorUid: string;
+  authorName: string;
+  trackId: string | null;
+  date: string; // "AAAA-MM-JJ"
+  weather: Weather | null;
+  surfaceId: string | null;
+  gripLevel: GripLevel | null;
+  rideHeightFront: number | null; // mm
+  rideHeightRear: number | null; // mm
+  diffOilFront: string | null; // cst, texte libre
+  diffOilCenter: string | null;
+  diffOilRear: string | null;
+  shockOilFront: string | null;
+  shockOilRear: string | null;
+  notes: string;
+  isPublic: boolean;
+  createdAt: number;
+}

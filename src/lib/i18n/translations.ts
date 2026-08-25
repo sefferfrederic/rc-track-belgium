@@ -125,6 +125,57 @@ export const translations = {
 
   // --- Divers ---
   close: { fr: "Fermer", nl: "Sluiten" },
+
+  // --- Mon Garage ---
+  garage_title: { fr: "Mon garage", nl: "Mijn garage" },
+  garage_add_car: { fr: "Ajouter une voiture", nl: "Auto toevoegen" },
+  garage_no_cars: { fr: "Aucune voiture pour l'instant.", nl: "Nog geen auto's." },
+  garage_car_name: { fr: "Nom de la voiture", nl: "Naam van de auto" },
+  garage_car_name_hint: { fr: "ex. Buggy Losi 8IGHT", nl: "bv. Buggy Losi 8IGHT" },
+  garage_new_setup: { fr: "Nouveau réglage", nl: "Nieuwe afstelling" },
+  garage_no_setups: { fr: "Aucun réglage enregistré pour cette voiture.", nl: "Nog geen afstelling voor deze auto." },
+  garage_setup_date: { fr: "Date", nl: "Datum" },
+  garage_setup_track: { fr: "Piste (facultatif)", nl: "Circuit (optioneel)" },
+  garage_setup_weather: { fr: "Météo", nl: "Weer" },
+  garage_weather_sec: { fr: "Sec", nl: "Droog" },
+  garage_weather_nuageux: { fr: "Nuageux", nl: "Bewolkt" },
+  garage_weather_pluie: { fr: "Pluie", nl: "Regen" },
+  garage_setup_surface: { fr: "Type de surface", nl: "Type ondergrond" },
+  garage_setup_grip: { fr: "Grip", nl: "Grip" },
+  garage_grip_fort: { fr: "Fort", nl: "Sterk" },
+  garage_grip_moyen: { fr: "Moyen", nl: "Gemiddeld" },
+  garage_grip_glissant: { fr: "Glissant", nl: "Glad" },
+  garage_ride_height: { fr: "Hauteurs de caisse", nl: "Rijhoogtes" },
+  garage_ride_height_front: { fr: "Avant (mm)", nl: "Voor (mm)" },
+  garage_ride_height_rear: { fr: "Arrière (mm)", nl: "Achter (mm)" },
+  garage_diff_oil: { fr: "Huiles de différentiel", nl: "Diffolie" },
+  garage_diff_front: { fr: "Avant", nl: "Voor" },
+  garage_diff_center: { fr: "Centre", nl: "Midden" },
+  garage_diff_rear: { fr: "Arrière", nl: "Achter" },
+  garage_shock_oil: { fr: "Huiles d'amortisseurs", nl: "Schokdemperolie" },
+  garage_shock_front: { fr: "Avant", nl: "Voor" },
+  garage_shock_rear: { fr: "Arrière", nl: "Achter" },
+  garage_notes: { fr: "Autres réglages / notes", nl: "Andere afstellingen / notities" },
+  garage_notes_hint: {
+    fr: "Carrossage, pincement, ressorts, barres anti-roulis… tout ce que tu veux garder en mémoire.",
+    nl: "Camber, toe, veren, stabilisatorstangen… alles wat je wilt onthouden.",
+  },
+  garage_public_toggle: { fr: "Partager ce réglage publiquement", nl: "Deze afstelling openbaar delen" },
+  garage_public_hint: {
+    fr: "Visible par toute la communauté (sans révéler tes autres voitures ni ton profil complet).",
+    nl: "Zichtbaar voor de hele community (zonder je andere auto's of volledig profiel te tonen).",
+  },
+  garage_save_setup: { fr: "Enregistrer le réglage", nl: "Afstelling opslaan" },
+  garage_delete_car: { fr: "Supprimer cette voiture", nl: "Deze auto verwijderen" },
+  garage_delete_car_confirm: {
+    fr: "Supprimer cette voiture et tous ses réglages ?",
+    nl: "Deze auto en al zijn afstellingen verwijderen?",
+  },
+  garage_delete_setup_confirm: { fr: "Supprimer ce réglage ?", nl: "Deze afstelling verwijderen?" },
+  garage_not_specified: { fr: "Non précisé", nl: "Niet gespecifieerd" },
+  garage_edit: { fr: "Modifier", nl: "Wijzigen" },
+  garage_delete: { fr: "Supprimer", nl: "Verwijderen" },
+  garage_back: { fr: "Retour au garage", nl: "Terug naar garage" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

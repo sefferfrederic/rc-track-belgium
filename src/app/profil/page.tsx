@@ -133,9 +133,9 @@ function ProfilPageInner() {
           className="mt-2 w-full rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm outline-none focus:border-track-orange"
         >
           <option value="">{t("profile_no_favorite")}</option>
-          {tracks.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
+          {tracks.map((tr) => (
+            <option key={tr.id} value={tr.id}>
+              {tr.name}
             </option>
           ))}
         </select>
@@ -151,6 +151,12 @@ function ProfilPageInner() {
           <p className="text-xs text-track-muted">{t("profile_role")}</p>
         </div>
       </div>
+
+      <Link href="/garage" className="w-full">
+        <Button variant="secondary" className="w-full">
+          🔧 {locale === "nl" ? "Mijn garage" : "Mon garage"}
+        </Button>
+      </Link>
 
       {profile.role === "admin" && (
         <Link href="/administration" className="w-full">
