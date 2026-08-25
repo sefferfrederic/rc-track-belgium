@@ -191,6 +191,30 @@ export const translations = {
   garage_edit: { fr: "Modifier", nl: "Wijzigen" },
   garage_delete: { fr: "Supprimer", nl: "Verwijderen" },
   garage_back: { fr: "Retour au garage", nl: "Terug naar garage" },
+
+  // --- Communication (bannière admin) ---
+  announcement_close: { fr: "Fermer ce message", nl: "Dit bericht sluiten" },
+  admin_tab_communication: { fr: "Communication", nl: "Communicatie" },
+  admin_announcement_new: { fr: "Nouveau message", nl: "Nieuw bericht" },
+  admin_announcement_title: { fr: "Titre", nl: "Titel" },
+  admin_announcement_message: { fr: "Message", nl: "Bericht" },
+  admin_announcement_type: { fr: "Type", nl: "Type" },
+  admin_announcement_type_info: { fr: "Info", nl: "Info" },
+  admin_announcement_type_important: { fr: "Important", nl: "Belangrijk" },
+  admin_announcement_type_evenement: { fr: "Événement", nl: "Evenement" },
+  admin_announcement_publish: { fr: "Publier", nl: "Publiceren" },
+  admin_announcement_publishing: { fr: "Publication…", nl: "Publiceren…" },
+  admin_announcement_history: { fr: "Historique", nl: "Geschiedenis" },
+  admin_announcement_none: { fr: "Aucun message publié pour l'instant.", nl: "Nog geen berichten gepubliceerd." },
+  admin_announcement_active: { fr: "Actif", nl: "Actief" },
+  admin_announcement_inactive: { fr: "Inactif", nl: "Inactief" },
+  admin_announcement_deactivate: { fr: "Désactiver", nl: "Deactiveren" },
+  admin_announcement_activate: { fr: "Réactiver", nl: "Heractiveren" },
+  admin_announcement_delete_confirm: {
+    fr: "Supprimer définitivement ce message ?",
+    nl: "Dit bericht definitief verwijderen?",
+  },
+  admin_announcement_delete: { fr: "Supprimer", nl: "Verwijderen" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

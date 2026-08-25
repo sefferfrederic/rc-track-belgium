@@ -8,11 +8,13 @@ import Button from "@/components/ui/Button";
 import EventFormModal from "@/components/admin/EventFormModal";
 import TrackFormModal from "@/components/admin/TrackFormModal";
 import TaxonomyManager from "@/components/admin/TaxonomyManager";
+import AnnouncementManager from "@/components/admin/AnnouncementManager";
 import { fetchEvents, deleteEvent } from "@/lib/firebase/events";
 import { fetchTracks, fetchTaxonomies, deleteTrack } from "@/lib/firebase/tracks";
-import type { RcEvent, Track, Taxonomy } from "@/types";
+import { fetchAnnouncements } from "@/lib/firebase/announcements";
+import type { RcEvent, Track, Taxonomy, Announcement } from "@/types";
 
-type Tab = "events" | "tracks" | "taxonomies";
+type Tab = "events" | "tracks" | "taxonomies" | "communication";
 
 export default function AdministrationPage() {
   const { user, profile, loading } = useAuth();
@@ -22,6 +24,7 @@ export default function AdministrationPage() {
   const [events, setEvents] = useState<RcEvent[]>([]);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [taxonomies, setTaxonomies] = useState<Taxonomy[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [busy, setBusy] = useState(true);
 
   const [eventModalOpen, setEventModalOpen] = useState(false);
@@ -35,12 +38,15 @@ export default function AdministrationPage() {
 
   const load = useCallback(() => {
     setBusy(true);
-    Promise.all([fetchEvents(), fetchTracks(), fetchTaxonomies()]).then(([e, t, tax]) => {
-      setEvents(e.sort((a, b) => a.date - b.date));
-      setTracks(t.sort((a, b) => a.name.localeCompare(b.name)));
-      setTaxonomies(tax);
-      setBusy(false);
-    });
+    Promise.all([fetchEvents(), fetchTracks(), fetchTaxonomies(), fetchAnnouncements()]).then(
+      ([e, t, tax, ann]) => {
+        setEvents(e.sort((a, b) => a.date - b.date));
+        setTracks(t.sort((a, b) => a.name.localeCompare(b.name)));
+        setTaxonomies(tax);
+        setAnnouncements(ann);
+        setBusy(false);
+      }
+    );
   }, []);
 
   useEffect(() => {
@@ -92,6 +98,7 @@ export default function AdministrationPage() {
             ["events", "Événements"],
             ["tracks", "Pistes"],
             ["taxonomies", "Catégories"],
+            ["communication", "Communication"],
           ] as [Tab, string][]
         ).map(([key, label]) => (
           <button
@@ -204,6 +211,10 @@ export default function AdministrationPage() {
 
       {!busy && tab === "taxonomies" && (
         <TaxonomyManager taxonomies={taxonomies} onChanged={load} />
+      )}
+
+      {!busy && tab === "communication" && user && (
+        <AnnouncementManager announcements={announcements} createdBy={user.uid} onChanged={load} />
       )}
 
       {eventModalOpen && user && (

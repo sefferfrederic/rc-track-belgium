@@ -4,6 +4,14 @@
       "collectionGroup": "setups",
       "queryScope": "COLLECTION_GROUP",
       "fields": [{ "fieldPath": "isPublic", "order": "ASCENDING" }]
+    },
+    {
+      "collectionGroup": "announcements",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "active", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

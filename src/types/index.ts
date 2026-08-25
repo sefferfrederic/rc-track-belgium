@@ -148,3 +148,17 @@ export interface CarSetup {
   isPublic: boolean;
   createdAt: number;
 }
+
+// --- Communication (bannière admin) ---
+
+export type AnnouncementType = "info" | "important" | "evenement";
+
+export interface Announcement {
+  id: string;
+  title: string;
+  message: string;
+  type: AnnouncementType;
+  active: boolean;
+  createdAt: number;
+  createdBy: string;
+}

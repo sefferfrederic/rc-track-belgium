@@ -101,6 +101,13 @@ service cloud.firestore {
           request.resource.data.diff(resource.data).affectedKeys().hasOnly(["going", "interested"]));
     }
 
+    // --- Communication (bannière admin) ---
+    // Lecture libre (y compris utilisateurs déconnectés), écriture réservée à l'admin.
+    match /announcements/{announcementId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // --- Notifications ---
     // Un utilisateur ne voit et ne modifie (marquer comme lu) que ses propres notifications.
     // La création se fait uniquement côté serveur (Cloud Functions).

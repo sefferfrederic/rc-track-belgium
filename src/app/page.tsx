@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
+import AnnouncementBanner from "@/components/layout/AnnouncementBanner";
 import SessionCard from "@/components/session/SessionCard";
 import SessionFormModal from "@/components/session/SessionFormModal";
 import { fetchSessionsForDay, fetchUpcomingSessionsForTrack, fetchRecentSessions } from "@/lib/firebase/sessions";
@@ -106,6 +107,8 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col gap-8">
+      <AnnouncementBanner />
+
       <section className="pt-2">
         <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-track-orange">
           Belgique · Modélisme RC
