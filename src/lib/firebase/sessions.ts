@@ -1,4 +1,4 @@
-import { doc, runTransaction, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, runTransaction, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "./client";
 import type { RidingSession, SessionParticipant, CertaintyLevel } from "@/types";
 
@@ -183,7 +183,17 @@ export async function fetchSessionsForRange(
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as RidingSession);
 }
 
-/** Prochaines sessions à venir sur une piste donnée (ex. piste favorite), triées par date. */
+/** Sessions créées depuis un instant donné (ex. depuis la dernière visite), les plus récentes en premier. */
+export async function fetchRecentSessions(sinceTs: number, max = 10): Promise<RidingSession[]> {
+  const q = query(
+    collection(db, "sessions"),
+    where("createdAt", ">", sinceTs),
+    orderBy("createdAt", "desc"),
+    limit(max)
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as RidingSession);
+}
 export async function fetchUpcomingSessionsForTrack(
   trackId: string,
   fromDayKey: string,

@@ -33,7 +33,9 @@ sur quelle piste, et à quelle heure — pour arrêter de rouler chacun de son c
 ✅ Application bilingue FR/NL (bouton dans la barre du haut, choix mémorisé)
 ✅ Pseudo obligatoire à l'inscription + prénom uniquement par défaut via Google (protection de la vie privée)
 ✅ Bouton Suggestions/Question dans le Profil (ouvre un email pré-rempli vers l'administrateur)
-✅ Mon Garage : voitures + fiches de réglages (météo, surface, grip, hauteurs de caisse, huiles diff/amortisseurs, notes libres), partage public optionnel par fiche
+✅ Mon Garage : voitures + fiches de réglages (météo, surface, grip, pneus marque/gomme, hauteurs de caisse, huiles diff/amortisseurs, notes libres), partage public optionnel par fiche
+✅ Page "Réglages publics" listant tous les réglages partagés par la communauté
+✅ Fil "Nouveautés depuis ta dernière visite" sur l'Accueil (nouvelles sessions, événements, réglages publics), avec bouton "Je participe" directement dessus
 ✅ Navigation complète
 
 ## À venir (voir `docs/architecture.md` pour le détail des phases)

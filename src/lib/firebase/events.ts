@@ -7,12 +7,28 @@ import {
   deleteDoc,
   arrayUnion,
   arrayRemove,
+  query,
+  where,
+  orderBy,
+  limit,
 } from "firebase/firestore";
 import { db } from "./client";
 import type { RcEvent } from "@/types";
 
 export async function fetchEvents(): Promise<RcEvent[]> {
   const snap = await getDocs(collection(db, "events"));
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as RcEvent);
+}
+
+/** Événements créés depuis un instant donné (ex. depuis la dernière visite), les plus récents en premier. */
+export async function fetchRecentEvents(sinceTs: number, max = 10): Promise<RcEvent[]> {
+  const q = query(
+    collection(db, "events"),
+    where("createdAt", ">", sinceTs),
+    orderBy("createdAt", "desc"),
+    limit(max)
+  );
+  const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as RcEvent);
 }
 

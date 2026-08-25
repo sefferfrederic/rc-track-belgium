@@ -1,5 +1,6 @@
 import {
   collection,
+  collectionGroup,
   doc,
   addDoc,
   updateDoc,
@@ -64,6 +65,8 @@ export interface SetupInput {
   weather: CarSetup["weather"];
   surfaceId: string | null;
   gripLevel: CarSetup["gripLevel"];
+  tireBrand: string | null;
+  tireCompound: CarSetup["tireCompound"];
   rideHeightFront: number | null;
   rideHeightRear: number | null;
   diffOilFront: string | null;
@@ -79,6 +82,16 @@ export async function fetchSetupsForCar(carId: string): Promise<CarSetup[]> {
   const q = query(collection(db, "cars", carId, "setups"), orderBy("date", "desc"));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as CarSetup);
+}
+
+/** Tous les réglages partagés publiquement, tous utilisateurs confondus, du plus récent au plus ancien. */
+export async function fetchPublicSetups(max = 50): Promise<CarSetup[]> {
+  const q = query(collectionGroup(db, "setups"), where("isPublic", "==", true));
+  const snap = await getDocs(q);
+  return snap.docs
+    .map((d) => ({ id: d.id, ...d.data() }) as CarSetup)
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .slice(0, max);
 }
 
 export async function createSetup(

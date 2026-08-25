@@ -1,4 +1,10 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "setups",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [{ "fieldPath": "isPublic", "order": "ASCENDING" }]
+    }
+  ],
   "fieldOverrides": []
 }

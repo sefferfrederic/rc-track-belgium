@@ -122,6 +122,7 @@ export interface Car {
 
 export type Weather = "sec" | "nuageux" | "pluie";
 export type GripLevel = "fort" | "moyen" | "glissant";
+export type TireCompound = "soft" | "medium" | "hard";
 
 export interface CarSetup {
   id: string;
@@ -134,6 +135,8 @@ export interface CarSetup {
   weather: Weather | null;
   surfaceId: string | null;
   gripLevel: GripLevel | null;
+  tireBrand: string | null;
+  tireCompound: TireCompound | null;
   rideHeightFront: number | null; // mm
   rideHeightRear: number | null; // mm
   diffOilFront: string | null; // cst, texte libre

@@ -154,6 +154,11 @@ export default function CarDetailPage({ params }: { params: { carId: string } })
               {s.weather && <span>{WEATHER_ICON[s.weather]} {t(`garage_weather_${s.weather}` as any)}</span>}
               {taxLabel(s.surfaceId) && <span>🏁 {taxLabel(s.surfaceId)}</span>}
               {s.gripLevel && <span>🛞 {t(`garage_grip_${s.gripLevel}` as any)}</span>}
+              {(s.tireBrand || s.tireCompound) && (
+                <span>
+                  🏎️ {[s.tireBrand, s.tireCompound ? t(`garage_tire_${s.tireCompound}` as any) : null].filter(Boolean).join(" · ")}
+                </span>
+              )}
             </div>
 
             {(s.rideHeightFront != null || s.rideHeightRear != null) && (

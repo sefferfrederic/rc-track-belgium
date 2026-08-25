@@ -126,6 +126,12 @@ export const translations = {
   // --- Divers ---
   close: { fr: "Fermer", nl: "Sluiten" },
 
+  // --- Nouveautés depuis la dernière visite ---
+  whatsnew_title: { fr: "Depuis ta dernière visite", nl: "Sinds je laatste bezoek" },
+  whatsnew_new_session: { fr: "Nouvelle session", nl: "Nieuwe sessie" },
+  whatsnew_new_event: { fr: "Nouvel événement", nl: "Nieuw evenement" },
+  whatsnew_new_setup: { fr: "Nouveau réglage partagé", nl: "Nieuwe gedeelde afstelling" },
+
   // --- Mon Garage ---
   garage_title: { fr: "Mon garage", nl: "Mijn garage" },
   garage_add_car: { fr: "Ajouter une voiture", nl: "Auto toevoegen" },
@@ -145,6 +151,15 @@ export const translations = {
   garage_grip_fort: { fr: "Fort", nl: "Sterk" },
   garage_grip_moyen: { fr: "Moyen", nl: "Gemiddeld" },
   garage_grip_glissant: { fr: "Glissant", nl: "Glad" },
+  garage_tires: { fr: "Pneus", nl: "Banden" },
+  garage_tire_brand: { fr: "Marque de pneus", nl: "Bandenmerk" },
+  garage_tire_soft: { fr: "Soft (tendre)", nl: "Soft (zacht)" },
+  garage_tire_medium: { fr: "Medium", nl: "Medium" },
+  garage_tire_hard: { fr: "Hard (dur)", nl: "Hard" },
+  garage_public_setups_title: { fr: "Réglages partagés", nl: "Gedeelde afstellingen" },
+  garage_public_setups_button: { fr: "Voir les réglages publics", nl: "Bekijk gedeelde afstellingen" },
+  garage_public_setups_none: { fr: "Aucun réglage partagé pour l'instant.", nl: "Nog geen gedeelde afstellingen." },
+  garage_by: { fr: "par", nl: "door" },
   garage_ride_height: { fr: "Hauteurs de caisse", nl: "Rijhoogtes" },
   garage_ride_height_front: { fr: "Avant (mm)", nl: "Voor (mm)" },
   garage_ride_height_rear: { fr: "Arrière (mm)", nl: "Achter (mm)" },

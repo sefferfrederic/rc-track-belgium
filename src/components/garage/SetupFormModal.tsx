@@ -35,6 +35,8 @@ export default function SetupFormModal({
   const [weather, setWeather] = useState<CarSetup["weather"]>(setup?.weather ?? null);
   const [surfaceId, setSurfaceId] = useState(setup?.surfaceId ?? "");
   const [gripLevel, setGripLevel] = useState<CarSetup["gripLevel"]>(setup?.gripLevel ?? null);
+  const [tireBrand, setTireBrand] = useState(setup?.tireBrand ?? "");
+  const [tireCompound, setTireCompound] = useState<CarSetup["tireCompound"]>(setup?.tireCompound ?? null);
   const [rideHeightFront, setRideHeightFront] = useState(setup?.rideHeightFront?.toString() ?? "");
   const [rideHeightRear, setRideHeightRear] = useState(setup?.rideHeightRear?.toString() ?? "");
   const [diffOilFront, setDiffOilFront] = useState(setup?.diffOilFront ?? "");
@@ -65,6 +67,8 @@ export default function SetupFormModal({
         weather,
         surfaceId: surfaceId || null,
         gripLevel,
+        tireBrand: tireBrand.trim() || null,
+        tireCompound,
         rideHeightFront: rideHeightFront ? Number(rideHeightFront) : null,
         rideHeightRear: rideHeightRear ? Number(rideHeightRear) : null,
         diffOilFront: diffOilFront.trim() || null,
@@ -98,6 +102,12 @@ export default function SetupFormModal({
     { value: "fort", key: "garage_grip_fort" },
     { value: "moyen", key: "garage_grip_moyen" },
     { value: "glissant", key: "garage_grip_glissant" },
+  ];
+
+  const compoundOptions: { value: NonNullable<CarSetup["tireCompound"]>; key: "garage_tire_soft" | "garage_tire_medium" | "garage_tire_hard" }[] = [
+    { value: "soft", key: "garage_tire_soft" },
+    { value: "medium", key: "garage_tire_medium" },
+    { value: "hard", key: "garage_tire_hard" },
   ];
 
   return (
@@ -192,6 +202,32 @@ export default function SetupFormModal({
                 onClick={() => setGripLevel(gripLevel === o.value ? null : o.value)}
                 className={`flex-1 rounded-lg border px-3 py-2 text-xs font-semibold uppercase ${
                   gripLevel === o.value ? "border-track-orange bg-track-orange/10 text-track-white" : "border-track-border text-track-muted"
+                }`}
+              >
+                {t(o.key)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-track-muted">
+            {t("garage_tires")}
+          </p>
+          <input
+            value={tireBrand}
+            onChange={(e) => setTireBrand(e.target.value)}
+            placeholder={t("garage_tire_brand")}
+            className="mb-2 w-full rounded-lg border border-track-border bg-track-surface2 px-4 py-2.5 text-sm outline-none focus:border-track-orange"
+          />
+          <div className="flex gap-2">
+            {compoundOptions.map((o) => (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => setTireCompound(tireCompound === o.value ? null : o.value)}
+                className={`flex-1 rounded-lg border px-3 py-2 text-xs font-semibold uppercase ${
+                  tireCompound === o.value ? "border-track-orange bg-track-orange/10 text-track-white" : "border-track-border text-track-muted"
                 }`}
               >
                 {t(o.key)}
