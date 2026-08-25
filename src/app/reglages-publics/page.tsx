@@ -16,14 +16,21 @@ export default function ReglagesPublicsPage() {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [taxonomies, setTaxonomies] = useState<Taxonomy[]>([]);
   const [busy, setBusy] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([fetchPublicSetups(), fetchTracks(), fetchTaxonomies()]).then(([s, t, tax]) => {
-      setSetups(s);
-      setTracks(t);
-      setTaxonomies(tax);
-      setBusy(false);
-    });
+    Promise.all([fetchPublicSetups(), fetchTracks(), fetchTaxonomies()])
+      .then(([s, t, tax]) => {
+        setSetups(s);
+        setTracks(t);
+        setTaxonomies(tax);
+        setBusy(false);
+      })
+      .catch((err) => {
+        console.error("Erreur réglages publics :", err);
+        setError(err instanceof Error ? err.message : String(err));
+        setBusy(false);
+      });
   }, []);
 
   const trackName = (id: string | null) => (id ? tracks.find((tr) => tr.id === id)?.name : null);
@@ -44,7 +51,21 @@ export default function ReglagesPublicsPage() {
 
       {busy && <p className="text-center text-sm text-track-muted">{t("home_loading")}</p>}
 
-      {!busy && setups.length === 0 && (
+      {error && (
+        <div className="rounded-xl2 border border-track-red/40 bg-track-red/10 p-4 text-sm">
+          <p className="font-semibold text-track-red">
+            {locale === "nl" ? "Er is een technisch probleem." : "Un souci technique est survenu."}
+          </p>
+          <p className="mt-1 text-track-muted">
+            {locale === "nl"
+              ? "Vraag aan de beheerder om het benodigde Firestore-index aan te maken."
+              : "Demande à l'administrateur de créer l'index Firestore nécessaire."}
+          </p>
+          <p className="mt-2 break-all font-mono text-xs text-track-muted">{error}</p>
+        </div>
+      )}
+
+      {!busy && !error && setups.length === 0 && (
         <p className="text-center text-sm text-track-muted">{t("garage_public_setups_none")}</p>
       )}
 

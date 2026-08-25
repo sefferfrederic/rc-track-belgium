@@ -65,20 +65,26 @@ export default function HomePage() {
   useEffect(() => {
     if (!user) return;
     const since = consumeLastVisit();
-    Promise.all([fetchRecentSessions(since), fetchRecentEvents(since), fetchPublicSetups()]).then(
-      ([recentSessions, recentEvents, publicSetups]) => {
-        const items: NewsItem[] = [
-          ...recentSessions.map((session): NewsItem => ({ type: "session", createdAt: session.createdAt, session })),
-          ...recentEvents.map((event): NewsItem => ({ type: "event", createdAt: event.createdAt, event })),
-          ...publicSetups
-            .filter((s) => s.createdAt > since)
-            .map((setup): NewsItem => ({ type: "setup", createdAt: setup.createdAt, setup })),
-        ]
-          .sort((a, b) => b.createdAt - a.createdAt)
-          .slice(0, 6);
-        setNews(items);
-      }
-    );
+    Promise.all([fetchRecentSessions(since), fetchRecentEvents(since), fetchPublicSetups()])
+      .then(
+        ([recentSessions, recentEvents, publicSetups]) => {
+          const items: NewsItem[] = [
+            ...recentSessions.map((session): NewsItem => ({ type: "session", createdAt: session.createdAt, session })),
+            ...recentEvents.map((event): NewsItem => ({ type: "event", createdAt: event.createdAt, event })),
+            ...publicSetups
+              .filter((s) => s.createdAt > since)
+              .map((setup): NewsItem => ({ type: "setup", createdAt: setup.createdAt, setup })),
+          ]
+            .sort((a, b) => b.createdAt - a.createdAt)
+            .slice(0, 6);
+          setNews(items);
+        }
+      )
+      .catch((err) => {
+        // L'index "réglages publics" n'est peut-être pas encore créé — on n'affiche
+        // simplement pas le bandeau "Nouveautés" plutôt que de casser toute la page.
+        console.error("Erreur fil nouveautés :", err);
+      });
   }, [user]);
 
   const trackName = (id: string) => tracks.find((t) => t.id === id)?.name ?? id;
