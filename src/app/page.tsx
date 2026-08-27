@@ -256,23 +256,28 @@ export default function HomePage() {
               {favoriteSessions.map((s) => (
                 <li
                   key={s.id}
-                  className="flex items-center justify-between rounded-xl2 border border-track-border bg-track-surface p-3 text-sm"
+                  className="flex flex-col gap-1 rounded-xl2 border border-track-border bg-track-surface p-3 text-sm"
                 >
-                  <span className="font-semibold">
-                    {new Date(`${s.dayKey}T00:00:00`).toLocaleDateString(locale === "nl" ? "nl-BE" : "fr-BE", {
-                      weekday: "short",
-                      day: "numeric",
-                      month: "short",
-                    })}
-                  </span>
-                  <span className="text-track-muted">
-                    {new Date(s.windowStart).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
-                    {" → "}
-                    {new Date(s.windowEnd).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
-                  </span>
-                  <span className="text-track-orange">
-                    {s.participants.length} {t("home_riders")}
-                  </span>
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold">
+                      {new Date(`${s.dayKey}T00:00:00`).toLocaleDateString(locale === "nl" ? "nl-BE" : "fr-BE", {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "short",
+                      })}
+                    </span>
+                    <span className="text-track-muted">
+                      {new Date(s.windowStart).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
+                      {" → "}
+                      {new Date(s.windowEnd).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                    <span className="text-track-orange">
+                      {s.participants.length} {t("home_riders")}
+                    </span>
+                  </div>
+                  <p className="text-xs text-track-muted">
+                    {s.participants.map((p) => p.displayName).join(", ")}
+                  </p>
                 </li>
               ))}
             </ul>
