@@ -150,6 +150,10 @@ export default function HomePage() {
             {news.map((item) => {
               if (item.type === "session") {
                 const s = item.session;
+                const organizer =
+                  s.participants.find((p) => p.uid === s.createdBy)?.displayName ??
+                  s.participants[0]?.displayName ??
+                  null;
                 return (
                   <div key={`s-${s.id}`} className="rounded-xl2 border border-track-border bg-track-surface p-3">
                     <p className="text-xs font-semibold uppercase tracking-wide text-track-muted">
@@ -168,6 +172,11 @@ export default function HomePage() {
                         minute: "2-digit",
                       })}
                     </p>
+                    {organizer && (
+                      <p className="text-sm text-track-muted">
+                        {t("garage_by")} {organizer}
+                      </p>
+                    )}
                     <Button
                       variant="secondary"
                       className="mt-2"
