@@ -6,6 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
 import { fetchEvents, setParticipation } from "@/lib/firebase/events";
 import { fetchTracks } from "@/lib/firebase/tracks";
+import { localizedText } from "@/lib/localize";
 import type { RcEvent, Track } from "@/types";
 
 export default function EvenementsPage() {
@@ -63,7 +64,9 @@ export default function EvenementsPage() {
                 <img src={ev.photoURL} alt={ev.title} className="h-40 w-full object-cover" />
               )}
               <div className="p-4">
-                <p className="font-display text-lg font-bold">{ev.title}</p>
+                <p className="font-display text-lg font-bold">
+                  {localizedText(ev.title, ev.titleNl, locale)}
+                </p>
                 <p className="text-sm text-track-muted">
                   {trackName(ev.trackId)} ·{" "}
                   {new Date(ev.date).toLocaleString(locale === "nl" ? "nl-BE" : "fr-BE", {
@@ -71,7 +74,11 @@ export default function EvenementsPage() {
                     timeStyle: "short",
                   })}
                 </p>
-                {ev.description && <p className="mt-2 text-sm text-track-white">{ev.description}</p>}
+                {ev.description && (
+                  <p className="mt-2 text-sm text-track-white">
+                    {localizedText(ev.description, ev.descriptionNl, locale)}
+                  </p>
+                )}
                 {ev.externalLink && (
                   <a
                     href={ev.externalLink}

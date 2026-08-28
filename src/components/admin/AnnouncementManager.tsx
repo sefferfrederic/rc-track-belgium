@@ -9,6 +9,7 @@ import {
   setAnnouncementActive,
   deleteAnnouncement,
 } from "@/lib/firebase/announcements";
+import { translateMany } from "@/lib/translate";
 import type { Announcement, AnnouncementType } from "@/types";
 
 const TYPE_STYLES: Record<AnnouncementType, string> = {
@@ -36,7 +37,11 @@ export default function AnnouncementManager({
     if (!title.trim() || !message.trim()) return;
     setSaving(true);
     try {
-      await createAnnouncement({ title: title.trim(), message: message.trim(), type }, createdBy);
+      const [titleNl, messageNl] = await translateMany([title.trim(), message.trim()]);
+      await createAnnouncement(
+        { title: title.trim(), titleNl, message: message.trim(), messageNl, type },
+        createdBy
+      );
       setTitle("");
       setMessage("");
       setType("info");
@@ -85,6 +90,8 @@ export default function AnnouncementManager({
               className="mt-1 w-full rounded-lg border border-track-border bg-track-surface2 px-3 py-2 text-sm outline-none focus:border-track-orange"
             />
           </div>
+
+          <p className="text-xs text-track-muted">🌍 {t("admin_auto_translate_note")}</p>
 
           <div>
             <label className="text-xs font-semibold uppercase tracking-wide text-track-muted">

@@ -13,6 +13,7 @@ import { fetchTracks, fetchTaxonomies } from "@/lib/firebase/tracks";
 import { fetchRecentEvents, setParticipation } from "@/lib/firebase/events";
 import { fetchPublicSetups } from "@/lib/firebase/cars";
 import { fetchUserCount } from "@/lib/firebase/auth";
+import { localizedText } from "@/lib/localize";
 import { todayDayKey } from "@/lib/date";
 import { consumeLastVisit } from "@/lib/lastVisit";
 import type { RidingSession, Track, Taxonomy, RcEvent, CarSetup } from "@/types";
@@ -78,9 +79,14 @@ export default function HomePage() {
     Promise.all([fetchRecentSessions(since), fetchRecentEvents(since), fetchPublicSetups()])
       .then(
         ([recentSessions, recentEvents, publicSetups]) => {
+          const now = Date.now();
           const items: NewsItem[] = [
-            ...recentSessions.map((session): NewsItem => ({ type: "session", createdAt: session.createdAt, session })),
-            ...recentEvents.map((event): NewsItem => ({ type: "event", createdAt: event.createdAt, event })),
+            ...recentSessions
+              .filter((session) => session.windowEnd >= now)
+              .map((session): NewsItem => ({ type: "session", createdAt: session.createdAt, session })),
+            ...recentEvents
+              .filter((event) => event.date >= now)
+              .map((event): NewsItem => ({ type: "event", createdAt: event.createdAt, event })),
             ...publicSetups
               .filter((s) => s.createdAt > since)
               .map((setup): NewsItem => ({ type: "setup", createdAt: setup.createdAt, setup })),
@@ -213,7 +219,9 @@ export default function HomePage() {
                     <p className="text-xs font-semibold uppercase tracking-wide text-track-muted">
                       {t("whatsnew_new_event")}
                     </p>
-                    <p className="mt-0.5 font-display text-base font-bold">{ev.title}</p>
+                    <p className="mt-0.5 font-display text-base font-bold">
+                      {localizedText(ev.title, ev.titleNl, locale)}
+                    </p>
                     <p className="text-sm text-track-muted">
                       {new Date(ev.date).toLocaleDateString(locale === "nl" ? "nl-BE" : "fr-BE", {
                         day: "numeric",

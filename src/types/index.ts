@@ -73,7 +73,9 @@ export interface SessionParticipant {
 export interface RcEvent {
   id: string;
   title: string;
+  titleNl?: string | null;
   description: string;
+  descriptionNl?: string | null;
   date: number;
   photoURL: string | null;
   trackId: string;
@@ -156,7 +158,9 @@ export type AnnouncementType = "info" | "important" | "evenement";
 export interface Announcement {
   id: string;
   title: string;
+  titleNl?: string | null;
   message: string;
+  messageNl?: string | null;
   type: AnnouncementType;
   active: boolean;
   createdAt: number;

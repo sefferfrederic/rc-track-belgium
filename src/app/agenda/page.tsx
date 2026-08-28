@@ -11,6 +11,7 @@ import WeatherForecast from "@/components/agenda/WeatherForecast";
 import { fetchSessionsForRange } from "@/lib/firebase/sessions";
 import { fetchTracks, fetchTaxonomies } from "@/lib/firebase/tracks";
 import { fetchEvents, setParticipation } from "@/lib/firebase/events";
+import { localizedText } from "@/lib/localize";
 import { todayDayKey, addMonths, monthStartKey, monthEndKey, toDayKey } from "@/lib/date";
 import type { RidingSession, Track, RcEvent, Taxonomy } from "@/types";
 
@@ -194,12 +195,18 @@ export default function AgendaPage() {
               <p className="font-display text-xs font-semibold uppercase tracking-wide text-track-red">
                 {t("agenda_legend_event")}
               </p>
-              <p className="mt-1 font-display text-base font-bold">{ev.title}</p>
+              <p className="mt-1 font-display text-base font-bold">
+                {localizedText(ev.title, ev.titleNl, locale)}
+              </p>
               <p className="text-sm text-track-muted">
                 {trackName(ev.trackId)} ·{" "}
                 {new Date(ev.date).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
               </p>
-              {ev.description && <p className="mt-2 text-sm text-track-white">{ev.description}</p>}
+              {ev.description && (
+                <p className="mt-2 text-sm text-track-white">
+                  {localizedText(ev.description, ev.descriptionNl, locale)}
+                </p>
+              )}
               {user && (
                 <div className="mt-3 flex gap-2">
                   <Button

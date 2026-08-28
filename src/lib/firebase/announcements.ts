@@ -36,7 +36,9 @@ export async function fetchActiveAnnouncement(): Promise<Announcement | null> {
 
 export interface AnnouncementInput {
   title: string;
+  titleNl?: string | null;
   message: string;
+  messageNl?: string | null;
   type: AnnouncementType;
 }
 

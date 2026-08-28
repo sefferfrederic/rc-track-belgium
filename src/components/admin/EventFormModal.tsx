@@ -6,6 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase/client";
 import { fetchTracks } from "@/lib/firebase/tracks";
 import { createEvent, updateEvent, type EventInput } from "@/lib/firebase/events";
+import { translateMany } from "@/lib/translate";
 import Button from "@/components/ui/Button";
 import type { Track, RcEvent } from "@/types";
 
@@ -58,9 +59,12 @@ export default function EventFormModal({
     setSaving(true);
     setError(null);
     try {
+      const [titleNl, descriptionNl] = await translateMany([title.trim(), description.trim()]);
       const input: EventInput = {
         title: title.trim(),
+        titleNl,
         description: description.trim(),
+        descriptionNl,
         date: new Date(dateStr).getTime(),
         photoURL,
         trackId,
@@ -114,6 +118,8 @@ export default function EventFormModal({
             className="w-full rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm outline-none focus:border-track-orange"
           />
         </div>
+
+        <p className="text-xs text-track-muted">🌍 Traduction automatique en néerlandais à la publication</p>
 
         <div>
           <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
@@ -169,7 +175,7 @@ export default function EventFormModal({
         {error && <p className="text-sm text-track-red">{error}</p>}
 
         <Button onClick={handleSubmit} disabled={saving} className="w-full">
-          {saving ? "Enregistrement…" : event ? "Enregistrer les modifications" : "Créer l'événement"}
+          {saving ? "Traduction et enregistrement…" : event ? "Enregistrer les modifications" : "Créer l'événement"}
         </Button>
       </div>
     </div>

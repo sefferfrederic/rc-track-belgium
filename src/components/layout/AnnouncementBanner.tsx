@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import clsx from "clsx";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { fetchActiveAnnouncement } from "@/lib/firebase/announcements";
+import { localizedText } from "@/lib/localize";
 import type { Announcement } from "@/types";
 
 const DISMISSED_KEY = "rc-track-dismissed-announcement";
@@ -22,7 +23,7 @@ const TYPE_ICON: Record<Announcement["type"], string> = {
 };
 
 export default function AnnouncementBanner() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [announcement, setAnnouncement] = useState<Announcement | null>(null);
 
   useEffect(() => {
@@ -60,9 +61,11 @@ export default function AnnouncementBanner() {
         <X size={18} />
       </button>
       <p className="font-display text-sm font-bold">
-        {TYPE_ICON[announcement.type]} {announcement.title}
+        {TYPE_ICON[announcement.type]} {localizedText(announcement.title, announcement.titleNl, locale)}
       </p>
-      <p className="mt-1 whitespace-pre-wrap text-sm text-track-muted">{announcement.message}</p>
+      <p className="mt-1 whitespace-pre-wrap text-sm text-track-muted">
+        {localizedText(announcement.message, announcement.messageNl, locale)}
+      </p>
     </section>
   );
 }

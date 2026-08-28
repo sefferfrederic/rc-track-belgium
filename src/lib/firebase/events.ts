@@ -34,7 +34,9 @@ export async function fetchRecentEvents(sinceTs: number, max = 10): Promise<RcEv
 
 export interface EventInput {
   title: string;
+  titleNl?: string | null;
   description: string;
+  descriptionNl?: string | null;
   date: number;
   photoURL: string | null;
   trackId: string;

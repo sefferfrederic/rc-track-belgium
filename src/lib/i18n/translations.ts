@@ -75,6 +75,11 @@ export const translations = {
   agenda_legend_event: { fr: "Événement", nl: "Evenement" },
   weather_title: { fr: "Météo à 3 jours", nl: "Weer voor 3 dagen" },
   home_user_count: { fr: "pilotes inscrits", nl: "geregistreerde piloten" },
+  admin_nl_optional: { fr: "Néerlandais (facultatif)", nl: "Nederlands (optioneel)" },
+  admin_auto_translate_note: {
+    fr: "Traduction automatique en néerlandais à la publication",
+    nl: "Automatische vertaling naar het Nederlands bij publicatie",
+  },
 
   // --- Carte ---
   map_title: { fr: "Toutes les pistes", nl: "Alle circuits" },
@@ -205,7 +210,7 @@ export const translations = {
   admin_announcement_type_important: { fr: "Important", nl: "Belangrijk" },
   admin_announcement_type_evenement: { fr: "Événement", nl: "Evenement" },
   admin_announcement_publish: { fr: "Publier", nl: "Publiceren" },
-  admin_announcement_publishing: { fr: "Publication…", nl: "Publiceren…" },
+  admin_announcement_publishing: { fr: "Traduction et publication…", nl: "Vertalen en publiceren…" },
   admin_announcement_history: { fr: "Historique", nl: "Geschiedenis" },
   admin_announcement_none: { fr: "Aucun message publié pour l'instant.", nl: "Nog geen berichten gepubliceerd." },
   admin_announcement_active: { fr: "Actif", nl: "Actief" },
