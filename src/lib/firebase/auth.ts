@@ -7,9 +7,16 @@ import {
   updateProfile,
   type User,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, setDoc, serverTimestamp, collection, getCountFromServer } from "firebase/firestore";
 import { auth, db } from "./client";
 import type { UserProfile } from "@/types";
+
+/** Nombre total de pilotes inscrits (visible pour les utilisateurs connectés). */
+export async function fetchUserCount(): Promise<number> {
+  const snap = await getCountFromServer(collection(db, "users"));
+  return snap.data().count;
+}
+
 
 /**
  * Crée le document Firestore /users/{uid} s'il n'existe pas encore.

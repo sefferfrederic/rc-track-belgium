@@ -12,6 +12,7 @@ import { fetchSessionsForDay, fetchUpcomingSessionsForTrack, fetchRecentSessions
 import { fetchTracks, fetchTaxonomies } from "@/lib/firebase/tracks";
 import { fetchRecentEvents, setParticipation } from "@/lib/firebase/events";
 import { fetchPublicSetups } from "@/lib/firebase/cars";
+import { fetchUserCount } from "@/lib/firebase/auth";
 import { todayDayKey } from "@/lib/date";
 import { consumeLastVisit } from "@/lib/lastVisit";
 import type { RidingSession, Track, Taxonomy, RcEvent, CarSetup } from "@/types";
@@ -29,6 +30,7 @@ export default function HomePage() {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [taxonomies, setTaxonomies] = useState<Taxonomy[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
+  const [userCount, setUserCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [joinContext, setJoinContext] = useState<{ trackId: string; dayKey: string } | null>(null);
@@ -52,6 +54,13 @@ export default function HomePage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    if (!user) return;
+    fetchUserCount()
+      .then(setUserCount)
+      .catch((err) => console.error("Erreur comptage pilotes :", err));
+  }, [user]);
 
   useEffect(() => {
     if (profile?.favoriteTrackId) {
@@ -117,6 +126,11 @@ export default function HomePage() {
           {t("home_tagline_1")} <span className="text-gradient-flag">{t("home_tagline_2")}</span>
         </h1>
         <p className="mt-3 max-w-md text-track-muted">{t("home_subtitle")}</p>
+        {userCount !== null && (
+          <p className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-track-orange/40 bg-track-orange/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-track-orange">
+            🏁 {userCount} {t("home_user_count")}
+          </p>
+        )}
         <div className="mt-6 flex flex-wrap gap-3">
           {user ? (
             <Button
