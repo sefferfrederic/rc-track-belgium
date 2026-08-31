@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminDb, adminStorage } from "@/lib/firebase/admin";
+import { getAdminDb, getAdminStorage } from "@/lib/firebase/admin";
 
 /**
  * Supprime les annonces (module Vente) dont la date d'expiration (30 jours après
@@ -13,6 +13,9 @@ export async function GET(req: NextRequest) {
   if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
+
+  const adminDb = getAdminDb();
+  const adminStorage = getAdminStorage();
 
   const now = Date.now();
   const snap = await adminDb.collection("listings").where("expiresAt", "<=", now).get();
