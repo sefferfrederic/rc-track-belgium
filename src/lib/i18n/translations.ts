@@ -263,6 +263,9 @@ export const translations = {
   vente_no_messages: { fr: "Aucune conversation pour l'instant.", nl: "Nog geen gesprekken." },
   vente_no_messages_yet: { fr: "Aucun message pour l'instant. Lance la discussion !", nl: "Nog geen berichten. Begin het gesprek!" },
   vente_message_placeholder: { fr: "Écris un message…", nl: "Schrijf een bericht…" },
+  vente_share: { fr: "Partager cette annonce", nl: "Deze advertentie delen" },
+  vente_copy_link: { fr: "Copier le lien", nl: "Link kopiëren" },
+  vente_link_copied: { fr: "Lien copié !", nl: "Link gekopieerd!" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

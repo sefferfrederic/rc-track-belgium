@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
+import ShareButton from "@/components/vente/ShareButton";
 import { setListingSold, deleteListing } from "@/lib/firebase/listings";
 import { getOrCreateConversation } from "@/lib/firebase/conversations";
 import type { Listing } from "@/types";
@@ -87,6 +88,8 @@ export default function ListingDetailClient({ initialListing }: { initialListing
       </div>
 
       {listing.description && <p className="whitespace-pre-wrap text-sm text-track-white">{listing.description}</p>}
+
+      <ShareButton title={`${listing.title} — ${listing.price} €`} url={`https://rc-tracks-belgium.be/vente/${listing.id}`} />
 
       {isOwner ? (
         <div className="flex gap-2">
