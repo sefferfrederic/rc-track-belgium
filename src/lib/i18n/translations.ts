@@ -138,6 +138,7 @@ export const translations = {
   whatsnew_new_session: { fr: "Nouvelle session", nl: "Nieuwe sessie" },
   whatsnew_new_event: { fr: "Nouvel événement", nl: "Nieuw evenement" },
   whatsnew_new_setup: { fr: "Nouveau réglage partagé", nl: "Nieuwe gedeelde afstelling" },
+  whatsnew_new_listing: { fr: "Nouvelle annonce", nl: "Nieuwe advertentie" },
 
   // --- Mon Garage ---
   garage_title: { fr: "Mon garage", nl: "Mijn garage" },
@@ -222,6 +223,46 @@ export const translations = {
     nl: "Dit bericht definitief verwijderen?",
   },
   admin_announcement_delete: { fr: "Supprimer", nl: "Verwijderen" },
+
+  // --- Module Vente ---
+  nav_vente: { fr: "Vente", nl: "Verkoop" },
+  vente_kicker: { fr: "Entre pilotes", nl: "Tussen piloten" },
+  vente_title: { fr: "Petites annonces", nl: "Advertenties" },
+  vente_my_listings: { fr: "Mes annonces", nl: "Mijn advertenties" },
+  vente_new_listing: { fr: "Nouvelle annonce", nl: "Nieuwe advertentie" },
+  vente_none: { fr: "Aucune annonce pour l'instant.", nl: "Nog geen advertenties." },
+  vente_cat_all: { fr: "Tout", nl: "Alles" },
+  vente_cat_voiture_complete: { fr: "Voiture complète", nl: "Volledige auto" },
+  vente_cat_chassis: { fr: "Châssis", nl: "Chassis" },
+  vente_cat_electronique: { fr: "Électronique", nl: "Elektronica" },
+  vente_cat_moteur: { fr: "Moteur", nl: "Motor" },
+  vente_cat_esc: { fr: "ESC", nl: "ESC" },
+  vente_cat_servo: { fr: "Servo", nl: "Servo" },
+  vente_cat_radio: { fr: "Radio", nl: "Radio" },
+  vente_form_missing: { fr: "Titre et prix sont obligatoires.", nl: "Titel en prijs zijn verplicht." },
+  vente_form_accept_required: {
+    fr: "Coche la case pour confirmer que tu as compris la limite de 30 jours.",
+    nl: "Vink het vakje aan om te bevestigen dat je de limiet van 30 dagen hebt begrepen.",
+  },
+  vente_form_category: { fr: "Catégorie", nl: "Categorie" },
+  vente_form_title: { fr: "Titre", nl: "Titel" },
+  vente_form_price: { fr: "Prix", nl: "Prijs" },
+  vente_form_description: { fr: "Description", nl: "Beschrijving" },
+  vente_form_photos: { fr: "Photos (2 max)", nl: "Foto's (max 2)" },
+  vente_form_accept_30days: {
+    fr: "Je comprends que mon annonce sera automatiquement supprimée après 30 jours.",
+    nl: "Ik begrijp dat mijn advertentie na 30 dagen automatisch wordt verwijderd.",
+  },
+  vente_form_publish: { fr: "Publier l'annonce", nl: "Advertentie plaatsen" },
+  vente_form_publishing: { fr: "Publication…", nl: "Plaatsen…" },
+  vente_not_found: { fr: "Annonce introuvable ou expirée.", nl: "Advertentie niet gevonden of verlopen." },
+  vente_mark_sold: { fr: "Marquer comme vendu", nl: "Markeren als verkocht" },
+  vente_mark_available: { fr: "Remettre en vente", nl: "Opnieuw te koop zetten" },
+  vente_contact_seller: { fr: "Contacter le vendeur", nl: "Verkoper contacteren" },
+  vente_my_messages: { fr: "Mes messages", nl: "Mijn berichten" },
+  vente_no_messages: { fr: "Aucune conversation pour l'instant.", nl: "Nog geen gesprekken." },
+  vente_no_messages_yet: { fr: "Aucun message pour l'instant. Lance la discussion !", nl: "Nog geen berichten. Begin het gesprek!" },
+  vente_message_placeholder: { fr: "Écris un message…", nl: "Schrijf een bericht…" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

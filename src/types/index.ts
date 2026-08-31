@@ -151,6 +151,56 @@ export interface CarSetup {
   createdAt: number;
 }
 
+// --- Vente entre pilotes ---
+
+export type ListingCategory =
+  | "voiture_complete"
+  | "chassis"
+  | "electronique"
+  | "moteur"
+  | "esc"
+  | "servo"
+  | "radio";
+
+export interface Listing {
+  id: string;
+  sellerUid: string;
+  sellerName: string;
+  category: ListingCategory;
+  title: string;
+  description: string;
+  price: number; // euros
+  photoURLs: string[]; // max 2
+  sold: boolean;
+  createdAt: number;
+  expiresAt: number; // createdAt + 30 jours, purgé automatiquement à cette échéance
+}
+
+// Une conversation = une paire (annonce, acheteur). Le vendeur peut avoir
+// plusieurs conversations en parallèle pour la même annonce (une par acheteur intéressé).
+export interface Conversation {
+  id: string;
+  listingId: string;
+  listingTitle: string;
+  sellerUid: string;
+  sellerName: string;
+  buyerUid: string;
+  buyerName: string;
+  participantUids: string[]; // [sellerUid, buyerUid] — utilisé par les règles de sécurité
+  lastMessageText: string;
+  lastMessageAt: number;
+  createdAt: number;
+}
+
+export interface ConversationMessage {
+  id: string;
+  conversationId: string;
+  authorUid: string;
+  authorName: string;
+  text: string;
+  createdAt: number;
+}
+
 // --- Communication (bannière admin) ---
 
 export type AnnouncementType = "info" | "important" | "evenement";

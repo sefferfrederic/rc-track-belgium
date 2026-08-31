@@ -1,13 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Home } from "lucide-react";
+import { Home, ShoppingCart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function TopBar() {
   const { user, profile } = useAuth();
   const { locale, setLocale, t } = useLanguage();
+  const [pulsing, setPulsing] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setPulsing(false), 4000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <header className="sticky top-0 z-[1000] border-b border-track-border bg-track-bg/90 backdrop-blur">
@@ -24,6 +31,16 @@ export default function TopBar() {
         </Link>
 
         <div className="flex items-center gap-2">
+          <Link
+            href="/vente"
+            className={`flex items-center gap-1 rounded-full bg-flag-gradient px-3 py-1.5 font-display text-xs font-bold uppercase tracking-wide text-track-bg transition-transform ${
+              pulsing ? "animate-pulse-vente" : ""
+            }`}
+          >
+            <ShoppingCart size={14} />
+            {t("nav_vente")}
+          </Link>
+
           <div className="flex items-center rounded-full border border-track-border p-0.5">
             <button
               onClick={() => setLocale("fr")}

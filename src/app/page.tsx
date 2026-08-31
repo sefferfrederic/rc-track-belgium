@@ -12,16 +12,18 @@ import { fetchSessionsForDay, fetchUpcomingSessionsForTrack, fetchRecentSessions
 import { fetchTracks, fetchTaxonomies } from "@/lib/firebase/tracks";
 import { fetchRecentEvents, setParticipation } from "@/lib/firebase/events";
 import { fetchPublicSetups } from "@/lib/firebase/cars";
+import { fetchActiveListings } from "@/lib/firebase/listings";
 import { fetchUserCount } from "@/lib/firebase/auth";
 import { localizedText } from "@/lib/localize";
 import { todayDayKey } from "@/lib/date";
 import { consumeLastVisit } from "@/lib/lastVisit";
-import type { RidingSession, Track, Taxonomy, RcEvent, CarSetup } from "@/types";
+import type { RidingSession, Track, Taxonomy, RcEvent, CarSetup, Listing } from "@/types";
 
 type NewsItem =
   | { type: "session"; createdAt: number; session: RidingSession }
   | { type: "event"; createdAt: number; event: RcEvent }
-  | { type: "setup"; createdAt: number; setup: CarSetup };
+  | { type: "setup"; createdAt: number; setup: CarSetup }
+  | { type: "listing"; createdAt: number; listing: Listing };
 
 export default function HomePage() {
   const { user, profile } = useAuth();
@@ -76,9 +78,9 @@ export default function HomePage() {
   useEffect(() => {
     if (!user) return;
     const since = consumeLastVisit();
-    Promise.all([fetchRecentSessions(since), fetchRecentEvents(since), fetchPublicSetups()])
+    Promise.all([fetchRecentSessions(since), fetchRecentEvents(since), fetchPublicSetups(), fetchActiveListings()])
       .then(
-        ([recentSessions, recentEvents, publicSetups]) => {
+        ([recentSessions, recentEvents, publicSetups, activeListings]) => {
           const now = Date.now();
           const items: NewsItem[] = [
             ...recentSessions
@@ -90,6 +92,9 @@ export default function HomePage() {
             ...publicSetups
               .filter((s) => s.createdAt > since)
               .map((setup): NewsItem => ({ type: "setup", createdAt: setup.createdAt, setup })),
+            ...activeListings
+              .filter((l) => l.createdAt > since && !l.sold)
+              .map((listing): NewsItem => ({ type: "listing", createdAt: listing.createdAt, listing })),
           ]
             .sort((a, b) => b.createdAt - a.createdAt)
             .slice(0, 6);
@@ -245,20 +250,36 @@ export default function HomePage() {
                   </div>
                 );
               }
-              const setup = item.setup;
+              if (item.type === "setup") {
+                const setup = item.setup;
+                return (
+                  <Link
+                    key={`p-${setup.id}`}
+                    href="/reglages-publics"
+                    className="block rounded-xl2 border border-track-border bg-track-surface p-3"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-track-muted">
+                      {t("whatsnew_new_setup")}
+                    </p>
+                    <p className="mt-0.5 font-display text-base font-bold">{setup.carName}</p>
+                    <p className="text-sm text-track-muted">
+                      {t("garage_by")} {setup.authorName}
+                    </p>
+                  </Link>
+                );
+              }
+              const listing = item.listing;
               return (
                 <Link
-                  key={`p-${setup.id}`}
-                  href="/reglages-publics"
+                  key={`l-${listing.id}`}
+                  href={`/vente/${listing.id}`}
                   className="block rounded-xl2 border border-track-border bg-track-surface p-3"
                 >
                   <p className="text-xs font-semibold uppercase tracking-wide text-track-muted">
-                    {t("whatsnew_new_setup")}
+                    {t("whatsnew_new_listing")}
                   </p>
-                  <p className="mt-0.5 font-display text-base font-bold">{setup.carName}</p>
-                  <p className="text-sm text-track-muted">
-                    {t("garage_by")} {setup.authorName}
-                  </p>
+                  <p className="mt-0.5 font-display text-base font-bold">{listing.title}</p>
+                  <p className="text-sm text-track-orange">{listing.price} €</p>
                 </Link>
               );
             })}

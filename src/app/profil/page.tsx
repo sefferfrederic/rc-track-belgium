@@ -158,6 +158,18 @@ function ProfilPageInner() {
         </Button>
       </Link>
 
+      <Link href="/vente?mine=1" className="w-full">
+        <Button variant="secondary" className="w-full">
+          🛒 {locale === "nl" ? "Mijn advertenties" : "Mes annonces"}
+        </Button>
+      </Link>
+
+      <Link href="/mes-messages" className="w-full">
+        <Button variant="secondary" className="w-full">
+          💬 {locale === "nl" ? "Mijn berichten" : "Mes messages"}
+        </Button>
+      </Link>
+
       {profile.role === "admin" && (
         <Link href="/administration" className="w-full">
           <Button variant="secondary" className="w-full">
