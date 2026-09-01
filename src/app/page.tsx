@@ -361,7 +361,7 @@ export default function HomePage() {
       {modalOpen && (
         <SessionFormModal
           fixedTrackId={joinContext?.trackId}
-          defaultTrackId={!joinContext ? profile?.favoriteTrackId : undefined}
+          defaultTrackId={!joinContext ? profile?.favoriteTrackId || undefined : undefined}
           fixedDayKey={joinContext?.dayKey ?? todayDayKey()}
           onClose={() => setModalOpen(false)}
           onSaved={() => {

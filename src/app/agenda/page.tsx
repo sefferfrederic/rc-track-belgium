@@ -241,7 +241,7 @@ export default function AgendaPage() {
       {modalOpen && (
         <SessionFormModal
           fixedTrackId={joinContext?.trackId}
-          defaultTrackId={!joinContext ? trackFilter || profile?.favoriteTrackId : undefined}
+          defaultTrackId={!joinContext ? (trackFilter || profile?.favoriteTrackId || undefined) : undefined}
           fixedDayKey={selectedDayKey}
           onClose={() => setModalOpen(false)}
           onSaved={() => {
