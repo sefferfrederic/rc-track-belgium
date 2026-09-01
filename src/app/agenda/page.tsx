@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
@@ -25,7 +25,7 @@ function formatDayLabel(dayKey: string, locale: "fr" | "nl"): string {
 }
 
 export default function AgendaPage() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { t, locale } = useLanguage();
   const [monthDayKey, setMonthDayKey] = useState(todayDayKey());
   const [selectedDayKey, setSelectedDayKey] = useState(todayDayKey());
@@ -37,6 +37,16 @@ export default function AgendaPage() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [joinContext, setJoinContext] = useState<{ trackId: string } | null>(null);
+
+  // Pré-remplit le filtre avec la piste favorite du pilote, une seule fois au chargement
+  // du profil — n'écrase jamais un choix que le pilote ferait ensuite manuellement.
+  const appliedFavoriteRef = useRef(false);
+  useEffect(() => {
+    if (!appliedFavoriteRef.current && profile) {
+      appliedFavoriteRef.current = true;
+      if (profile.favoriteTrackId) setTrackFilter(profile.favoriteTrackId);
+    }
+  }, [profile]);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -231,6 +241,7 @@ export default function AgendaPage() {
       {modalOpen && (
         <SessionFormModal
           fixedTrackId={joinContext?.trackId}
+          defaultTrackId={!joinContext ? trackFilter || profile?.favoriteTrackId : undefined}
           fixedDayKey={selectedDayKey}
           onClose={() => setModalOpen(false)}
           onSaved={() => {

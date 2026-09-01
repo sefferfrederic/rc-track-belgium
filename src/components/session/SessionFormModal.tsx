@@ -28,18 +28,19 @@ function addHoursToTimeStr(time: string, hours: number): string {
 }
 
 interface Props {
-  fixedTrackId?: string; // si fourni : piste déjà choisie (rejoindre, ou "créer ici" depuis la fiche piste)
+  fixedTrackId?: string; // si fourni : piste imposée et verrouillée (rejoindre une session précise, ou "créer ici" depuis la fiche piste)
+  defaultTrackId?: string; // si fourni : piste pré-sélectionnée mais modifiable (ex. piste favorite du pilote)
   fixedDayKey?: string; // si fourni : jour déjà choisi (ex. depuis le calendrier)
   onClose: () => void;
   onSaved: () => void;
 }
 
-export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, onSaved }: Props) {
+export default function SessionFormModal({ fixedTrackId, defaultTrackId, fixedDayKey, onClose, onSaved }: Props) {
   const { user, profile } = useAuth();
   const { t, locale } = useLanguage();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [taxonomies, setTaxonomies] = useState<Taxonomy[]>([]);
-  const [trackId, setTrackId] = useState(fixedTrackId ?? "");
+  const [trackId, setTrackId] = useState(fixedTrackId ?? defaultTrackId ?? "");
   const [dayKey, setDayKey] = useState(fixedDayKey ?? todayDayKey());
   const [startTime, setStartTime] = useState(roundedNowTimeStr());
   const [endTime, setEndTime] = useState(addHoursToTimeStr(roundedNowTimeStr(), 2));
@@ -54,9 +55,11 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
       const sorted = t.sort((a, b) => a.name.localeCompare(b.name));
       setTracks(sorted);
       setTaxonomies(tax);
-      if (!fixedTrackId && sorted.length > 0) setTrackId((prev) => prev || sorted[0].id);
+      if (!fixedTrackId && sorted.length > 0) {
+        setTrackId((prev) => prev || defaultTrackId || sorted[0].id);
+      }
     });
-  }, [fixedTrackId]);
+  }, [fixedTrackId, defaultTrackId]);
 
   const selectedTrack = tracks.find((t) => t.id === trackId) ?? null;
 
