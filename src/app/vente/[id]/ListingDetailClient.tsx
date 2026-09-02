@@ -10,7 +10,15 @@ import Button from "@/components/ui/Button";
 import ShareButton from "@/components/vente/ShareButton";
 import { setListingSold, deleteListing } from "@/lib/firebase/listings";
 import { getOrCreateConversation } from "@/lib/firebase/conversations";
-import type { Listing } from "@/types";
+import type { Listing, ListingCondition } from "@/types";
+
+const CONDITION_LABELS: Record<ListingCondition, { fr: string; nl: string }> = {
+  neuf: { fr: "Neuf", nl: "Nieuw" },
+  occasion_comme_neuf: { fr: "Occasion comme neuf", nl: "Tweedehands, als nieuw" },
+  occasion_usure: { fr: "Occasion (quelques marques d'usure)", nl: "Tweedehands (lichte sporen van gebruik)" },
+  use_fonctionnel: { fr: "Usé mais fonctionnel", nl: "Versleten maar werkend" },
+  pour_pieces: { fr: "Pour pièces", nl: "Voor onderdelen" },
+};
 
 function daysLeft(expiresAt: number): number {
   return Math.max(0, Math.ceil((expiresAt - Date.now()) / (24 * 3600 * 1000)));
@@ -88,6 +96,49 @@ export default function ListingDetailClient({ initialListing }: { initialListing
       </div>
 
       {listing.description && <p className="whitespace-pre-wrap text-sm text-track-white">{listing.description}</p>}
+
+      {(listing.brand || listing.escBrand || listing.servoBrand || listing.condition ||
+        listing.soldWithTires !== null && listing.soldWithTires !== undefined ||
+        listing.soldWithBody !== null && listing.soldWithBody !== undefined) && (
+        <div className="flex flex-col gap-1.5 rounded-xl2 border border-track-border bg-track-surface p-3 text-sm">
+          {listing.brand && (
+            <div className="flex justify-between">
+              <span className="text-track-muted">{t("vente_form_brand")}</span>
+              <span>{listing.brand}</span>
+            </div>
+          )}
+          {listing.escBrand && (
+            <div className="flex justify-between">
+              <span className="text-track-muted">{t("vente_form_esc_brand")}</span>
+              <span>{listing.escBrand}</span>
+            </div>
+          )}
+          {listing.servoBrand && (
+            <div className="flex justify-between">
+              <span className="text-track-muted">{t("vente_form_servo_brand")}</span>
+              <span>{listing.servoBrand}</span>
+            </div>
+          )}
+          {listing.condition && (
+            <div className="flex justify-between">
+              <span className="text-track-muted">{t("vente_form_condition")}</span>
+              <span>{locale === "nl" ? CONDITION_LABELS[listing.condition].nl : CONDITION_LABELS[listing.condition].fr}</span>
+            </div>
+          )}
+          {listing.soldWithTires !== null && listing.soldWithTires !== undefined && (
+            <div className="flex justify-between">
+              <span className="text-track-muted">{t("vente_form_with_tires")}</span>
+              <span>{listing.soldWithTires ? (locale === "nl" ? "Ja" : "Oui") : (locale === "nl" ? "Nee" : "Non")}</span>
+            </div>
+          )}
+          {listing.soldWithBody !== null && listing.soldWithBody !== undefined && (
+            <div className="flex justify-between">
+              <span className="text-track-muted">{t("vente_form_with_body")}</span>
+              <span>{listing.soldWithBody ? (locale === "nl" ? "Ja" : "Oui") : (locale === "nl" ? "Nee" : "Non")}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       <ShareButton title={`${listing.title} — ${listing.price} €`} url={`https://rc-tracks-belgium.be/vente/${listing.id}`} />
 

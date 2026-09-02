@@ -10,7 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "./client";
-import type { Listing, ListingCategory } from "@/types";
+import type { Listing, ListingCategory, ListingCondition } from "@/types";
 
 const THIRTY_DAYS_MS = 30 * 24 * 3600 * 1000;
 
@@ -20,6 +20,12 @@ export interface ListingInput {
   description: string;
   price: number;
   photoURLs: string[];
+  brand?: string | null;
+  escBrand?: string | null;
+  servoBrand?: string | null;
+  condition?: ListingCondition | null;
+  soldWithTires?: boolean | null;
+  soldWithBody?: boolean | null;
 }
 
 /** Toutes les annonces actives (non expirées), triées de la plus récente à la plus ancienne. */
@@ -51,8 +57,12 @@ export async function createListing(
   sellerName: string
 ): Promise<string> {
   const now = Date.now();
+  // Firestore refuse les valeurs "undefined" — on les remplace par null (ou on les retire).
+  const cleanInput = Object.fromEntries(
+    Object.entries(input).map(([k, v]) => [k, v === undefined ? null : v])
+  );
   const ref = await addDoc(collection(db, "listings"), {
-    ...input,
+    ...cleanInput,
     sellerUid,
     sellerName,
     sold: false,

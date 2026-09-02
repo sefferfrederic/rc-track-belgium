@@ -162,6 +162,13 @@ export type ListingCategory =
   | "servo"
   | "radio";
 
+export type ListingCondition =
+  | "neuf"
+  | "occasion_comme_neuf"
+  | "occasion_usure"
+  | "use_fonctionnel"
+  | "pour_pieces";
+
 export interface Listing {
   id: string;
   sellerUid: string;
@@ -172,6 +179,12 @@ export interface Listing {
   price: number; // euros
   photoURLs: string[]; // max 2
   sold: boolean;
+  brand?: string | null; // marque véhicule/châssis — uniquement voiture_complete / chassis
+  escBrand?: string | null; // marque ESC en texte libre — uniquement catégorie esc
+  servoBrand?: string | null; // marque servo en texte libre — uniquement catégorie servo
+  condition?: ListingCondition | null;
+  soldWithTires?: boolean | null; // uniquement voiture_complete / chassis
+  soldWithBody?: boolean | null; // uniquement voiture_complete / chassis
   createdAt: number;
   expiresAt: number; // createdAt + 30 jours, purgé automatiquement à cette échéance
 }

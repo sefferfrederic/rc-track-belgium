@@ -266,6 +266,15 @@ export const translations = {
   vente_share: { fr: "Partager cette annonce", nl: "Deze advertentie delen" },
   vente_copy_link: { fr: "Copier le lien", nl: "Link kopiëren" },
   vente_link_copied: { fr: "Lien copié !", nl: "Link gekopieerd!" },
+  vente_form_brand: { fr: "Marque", nl: "Merk" },
+  vente_form_brand_none: { fr: "Non précisé", nl: "Niet gespecificeerd" },
+  vente_form_brand_other: { fr: "Autre marque…", nl: "Ander merk…" },
+  vente_form_esc_brand: { fr: "Marque ESC", nl: "Merk ESC" },
+  vente_form_servo_brand: { fr: "Marque servo", nl: "Merk servo" },
+  vente_form_condition: { fr: "État", nl: "Staat" },
+  vente_form_condition_none: { fr: "Non précisé", nl: "Niet gespecificeerd" },
+  vente_form_with_tires: { fr: "Vendu avec pneus ?", nl: "Verkocht met banden?" },
+  vente_form_with_body: { fr: "Vendu avec carrosserie ?", nl: "Verkocht met carrosserie?" },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
 import { createListing, type ListingInput } from "@/lib/firebase/listings";
-import type { ListingCategory } from "@/types";
+import type { ListingCategory, ListingCondition } from "@/types";
 
 const CATEGORY_OPTIONS: { id: ListingCategory; fr: string; nl: string }[] = [
   { id: "voiture_complete", fr: "Voiture complète", nl: "Volledige auto" },
@@ -19,6 +19,40 @@ const CATEGORY_OPTIONS: { id: ListingCategory; fr: string; nl: string }[] = [
   { id: "servo", fr: "Servo", nl: "Servo" },
   { id: "radio", fr: "Télécommande / radio", nl: "Afstandsbediening / radio" },
 ];
+
+// Marques véhicule/châssis les plus courantes en RC — "Autre" en secours pour le reste.
+const BRAND_OPTIONS = [
+  "Team Associated",
+  "Tekno RC",
+  "Losi / TLR",
+  "Kyosho",
+  "HB Racing",
+  "Xray",
+  "Serpent",
+  "Traxxas",
+  "Arrma",
+  "HPI Racing",
+  "Team Durango",
+  "Mugen Seiki",
+  "Yokomo",
+  "Schumacher Racing",
+  "Corally",
+  "MST",
+  "Awesomatix",
+  "Roche",
+  "Sworkz",
+  "FTX",
+];
+
+const CONDITION_OPTIONS: { id: ListingCondition; fr: string; nl: string }[] = [
+  { id: "neuf", fr: "Neuf", nl: "Nieuw" },
+  { id: "occasion_comme_neuf", fr: "Occasion comme neuf", nl: "Tweedehands, als nieuw" },
+  { id: "occasion_usure", fr: "Occasion (quelques marques d'usure)", nl: "Tweedehands (lichte sporen van gebruik)" },
+  { id: "use_fonctionnel", fr: "Usé mais fonctionnel", nl: "Versleten maar werkend" },
+  { id: "pour_pieces", fr: "Pour pièces", nl: "Voor onderdelen" },
+];
+
+const CAR_CATEGORIES: ListingCategory[] = ["voiture_complete", "chassis"];
 
 export default function ListingFormModal({
   sellerUid,
@@ -40,6 +74,16 @@ export default function ListingFormModal({
   const [accepted, setAccepted] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [brand, setBrand] = useState("");
+  const [brandOther, setBrandOther] = useState("");
+  const [escBrand, setEscBrand] = useState("");
+  const [servoBrand, setServoBrand] = useState("");
+  const [condition, setCondition] = useState<ListingCondition | "">("");
+  const [soldWithTires, setSoldWithTires] = useState<"" | "yes" | "no">("");
+  const [soldWithBody, setSoldWithBody] = useState<"" | "yes" | "no">("");
+
+  const isCarCategory = CAR_CATEGORIES.includes(category);
 
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -80,6 +124,12 @@ export default function ListingFormModal({
         description: description.trim(),
         price: priceNum,
         photoURLs,
+        brand: isCarCategory ? (brand === "autre" ? brandOther.trim() || null : brand || null) : null,
+        escBrand: category === "esc" ? escBrand.trim() || null : null,
+        servoBrand: category === "servo" ? servoBrand.trim() || null : null,
+        condition: condition || null,
+        soldWithTires: isCarCategory && soldWithTires ? soldWithTires === "yes" : null,
+        soldWithBody: isCarCategory && soldWithBody ? soldWithBody === "yes" : null,
       };
       await createListing(input, sellerUid, profile?.displayName ?? "");
       onSaved();
@@ -127,6 +177,114 @@ export default function ListingFormModal({
             className="w-full rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm outline-none focus:border-track-orange"
           />
         </div>
+
+        {isCarCategory && (
+          <div>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
+              {t("vente_form_brand")}
+            </label>
+            <select
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              className="w-full rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm outline-none focus:border-track-orange"
+            >
+              <option value="">{t("vente_form_brand_none")}</option>
+              {BRAND_OPTIONS.map((b) => (
+                <option key={b} value={b}>
+                  {b}
+                </option>
+              ))}
+              <option value="autre">{t("vente_form_brand_other")}</option>
+            </select>
+            {brand === "autre" && (
+              <input
+                value={brandOther}
+                onChange={(e) => setBrandOther(e.target.value)}
+                placeholder={t("vente_form_brand_other")}
+                className="mt-2 w-full rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm outline-none focus:border-track-orange"
+              />
+            )}
+          </div>
+        )}
+
+        {category === "esc" && (
+          <div>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
+              {t("vente_form_esc_brand")}
+            </label>
+            <input
+              value={escBrand}
+              onChange={(e) => setEscBrand(e.target.value)}
+              placeholder={locale === "nl" ? "bijv. Hobbywing" : "ex. Hobbywing"}
+              className="w-full rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm outline-none focus:border-track-orange"
+            />
+          </div>
+        )}
+
+        {category === "servo" && (
+          <div>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
+              {t("vente_form_servo_brand")}
+            </label>
+            <input
+              value={servoBrand}
+              onChange={(e) => setServoBrand(e.target.value)}
+              placeholder={locale === "nl" ? "bijv. Savox" : "ex. Savox"}
+              className="w-full rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm outline-none focus:border-track-orange"
+            />
+          </div>
+        )}
+
+        <div>
+          <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
+            {t("vente_form_condition")}
+          </label>
+          <select
+            value={condition}
+            onChange={(e) => setCondition(e.target.value as ListingCondition | "")}
+            className="w-full rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm outline-none focus:border-track-orange"
+          >
+            <option value="">{t("vente_form_condition_none")}</option>
+            {CONDITION_OPTIONS.map((c) => (
+              <option key={c.id} value={c.id}>
+                {locale === "nl" ? c.nl : c.fr}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {isCarCategory && (
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
+                {t("vente_form_with_tires")}
+              </label>
+              <select
+                value={soldWithTires}
+                onChange={(e) => setSoldWithTires(e.target.value as "" | "yes" | "no")}
+                className="w-full rounded-lg border border-track-border bg-track-surface2 px-3 py-3 text-sm outline-none focus:border-track-orange"
+              >
+                <option value="">—</option>
+                <option value="yes">{locale === "nl" ? "Ja" : "Oui"}</option>
+                <option value="no">{locale === "nl" ? "Nee" : "Non"}</option>
+              </select>
+            </div>
+            <div className="flex-1">
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
+                {t("vente_form_with_body")}
+              </label>
+              <select
+                value={soldWithBody}
+                onChange={(e) => setSoldWithBody(e.target.value as "" | "yes" | "no")}
+                className="w-full rounded-lg border border-track-border bg-track-surface2 px-3 py-3 text-sm outline-none focus:border-track-orange"
+              >
+                <option value="">—</option>
+                <option value="yes">{locale === "nl" ? "Ja" : "Oui"}</option>
+                <option value="no">{locale === "nl" ? "Nee" : "Non"}</option>
+              </select>
+            </div>
+          </div>
+        )}
 
         <div>
           <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-track-muted">
