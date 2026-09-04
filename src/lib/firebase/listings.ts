@@ -69,6 +69,13 @@ export async function createListing(
     createdAt: now,
     expiresAt: now + THIRTY_DAYS_MS,
   });
+
+  fetch("/api/notify/listing-created", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sellerUid, title: input.title, price: input.price }),
+  }).catch(() => {});
+
   return ref.id;
 }
 

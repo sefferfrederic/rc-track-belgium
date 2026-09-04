@@ -181,6 +181,12 @@ function ProfilPageInner() {
         </Button>
       </Link>
 
+      <Link href="/profil/notifications" className="w-full">
+        <Button variant="secondary" className="w-full">
+          🔔 {t("notif_prefs_title")}
+        </Button>
+      </Link>
+
       {profile.role === "admin" && (
         <Link href="/administration" className="w-full">
           <Button variant="secondary" className="w-full">

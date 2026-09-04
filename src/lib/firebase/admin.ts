@@ -1,6 +1,7 @@
 import { initializeApp, getApps, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { getStorage } from "firebase-admin/storage";
+import { getMessaging } from "firebase-admin/messaging";
 
 /**
  * SDK Admin Firebase — utilisé uniquement dans des routes API (côté serveur).
@@ -31,4 +32,8 @@ export function getAdminDb() {
 
 export function getAdminStorage() {
   return getStorage(getAdminApp());
+}
+
+export function getAdminMessaging() {
+  return getMessaging(getAdminApp());
 }

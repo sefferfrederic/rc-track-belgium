@@ -276,6 +276,57 @@ export const translations = {
   vente_form_condition_none: { fr: "Non précisé", nl: "Niet gespecificeerd" },
   vente_form_with_tires: { fr: "Vendu avec pneus ?", nl: "Verkocht met banden?" },
   vente_form_with_body: { fr: "Vendu avec carrosserie ?", nl: "Verkocht met carrosserie?" },
+
+  // --- Préférences de notifications ---
+  notif_prefs_title: { fr: "Notifications", nl: "Meldingen" },
+  notif_prefs_back: { fr: "Retour au profil", nl: "Terug naar profiel" },
+  notif_prefs_enable_hint: {
+    fr: "Active les notifications push pour ne rien rater sur cet appareil.",
+    nl: "Activeer pushmeldingen om niets te missen op dit toestel.",
+  },
+  notif_prefs_enable_button: { fr: "Activer sur cet appareil", nl: "Activeren op dit toestel" },
+  notif_prefs_enabling: { fr: "Activation…", nl: "Activeren…" },
+  notif_prefs_active_on_device: {
+    fr: "Notifications actives sur cet appareil.",
+    nl: "Meldingen actief op dit toestel.",
+  },
+  notif_prefs_denied: {
+    fr: "Permission refusée. Autorise les notifications dans les réglages de ton navigateur pour les activer.",
+    nl: "Toestemming geweigerd. Sta meldingen toe in je browserinstellingen om ze te activeren.",
+  },
+  notif_prefs_unsupported: {
+    fr: "Les notifications push ne sont pas prises en charge par ce navigateur.",
+    nl: "Pushmeldingen worden niet ondersteund door deze browser.",
+  },
+  notif_prefs_error: {
+    fr: "Impossible d'activer les notifications, réessaie.",
+    nl: "Kan meldingen niet activeren, probeer opnieuw.",
+  },
+  notif_cat_sessions_new_title: { fr: "Nouvelle session sur mes pistes favorites", nl: "Nieuwe sessie op mijn favoriete circuits" },
+  notif_cat_sessions_new_desc: {
+    fr: "Un pilote déclare rouler sur une de tes pistes favorites.",
+    nl: "Een piloot rijdt op een van je favoriete circuits.",
+  },
+  notif_cat_sessions_reminder_title: { fr: "Rappel avant mes sessions", nl: "Herinnering voor mijn sessies" },
+  notif_cat_sessions_reminder_desc: {
+    fr: "2h avant le début d'une session où tu es inscrit.",
+    nl: "2u voor het begin van een sessie waarvoor je ingeschreven bent.",
+  },
+  notif_cat_marketplace_title: { fr: "Nouvelles annonces", nl: "Nieuwe advertenties" },
+  notif_cat_marketplace_desc: {
+    fr: "Un objet est mis en vente entre pilotes.",
+    nl: "Een item wordt te koop aangeboden tussen piloten.",
+  },
+  notif_cat_garage_title: { fr: "Nouveaux setups publics", nl: "Nieuwe publieke setups" },
+  notif_cat_garage_desc: {
+    fr: "Un pilote partage un réglage de voiture public.",
+    nl: "Een piloot deelt een publieke wagensetup.",
+  },
+  notif_cat_announcements_title: { fr: "Annonces de l'équipe", nl: "Mededelingen van het team" },
+  notif_cat_announcements_desc: {
+    fr: "Bannières de communication publiées par l'administration.",
+    nl: "Communicatiebanners gepubliceerd door de administratie.",
+  },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

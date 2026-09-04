@@ -3,6 +3,14 @@
 
 export type UserRole = "admin" | "user";
 
+export interface NotificationPrefs {
+  sessionsNewOnFavorite: boolean; // nouvelle session sur une piste favorite
+  sessionsReminder: boolean; // rappel 2h avant une session où je suis inscrit
+  marketplaceNew: boolean; // nouvelle annonce "Vente entre pilotes"
+  garageNewSetup: boolean; // nouveau setup public dans "Mon Garage"
+  announcements: boolean; // bannière de communication admin
+}
+
 export interface UserProfile {
   uid: string;
   displayName: string; // pseudo ou prénom
@@ -14,6 +22,8 @@ export interface UserProfile {
   stats: {
     sessionsCount: number;
   };
+  notificationPrefs?: NotificationPrefs; // absent = toutes activées par défaut, voir lib/notifications.ts
+  fcmTokens?: string[]; // un token par appareil ayant activé les notifications push
 }
 
 export interface Track {
@@ -68,6 +78,7 @@ export interface SessionParticipant {
   disciplineId?: string | null;
   scaleId?: string | null;
   joinedAt: number;
+  reminderSentAt?: number | null; // évite les rappels push en double (voir api/cron/session-reminders)
 }
 
 export interface RcEvent {
