@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LanguageProvider>
           <AuthProvider>
             <TopBar />
-            <main className="mx-auto min-h-[calc(100dvh-64px-72px)] w-full max-w-3xl px-4 pb-28 pt-4 md:px-6">
+            <main className="mx-auto min-h-[calc(100dvh-64px-72px)] w-full max-w-3xl px-4 pb-24 pt-4 md:px-6">
               {children}
             </main>
             <BottomNav />

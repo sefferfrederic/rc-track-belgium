@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase/client";
+import { normalizeProfile } from "@/lib/firebase/auth";
 import type { UserProfile } from "@/types";
 
 interface AuthContextValue {
@@ -38,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     const ref = doc(db, "users", user.uid);
     const unsubscribeProfile = onSnapshot(ref, (snap) => {
-      setProfile(snap.exists() ? (snap.data() as UserProfile) : null);
+      setProfile(snap.exists() ? normalizeProfile(snap.data()) : null);
       setLoading(false);
     });
     return () => unsubscribeProfile();

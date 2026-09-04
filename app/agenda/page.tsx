@@ -13,7 +13,7 @@ import { fetchTracks, fetchTaxonomies } from "@/lib/firebase/tracks";
 import { fetchEvents, setParticipation } from "@/lib/firebase/events";
 import { localizedText } from "@/lib/localize";
 import { todayDayKey, addMonths, monthStartKey, monthEndKey, toDayKey } from "@/lib/date";
-import type { RidingSession, Track, RcEvent, Taxonomy, SessionParticipant } from "@/types";
+import type { RidingSession, Track, RcEvent, Taxonomy } from "@/types";
 
 function formatDayLabel(dayKey: string, locale: "fr" | "nl"): string {
   const label = new Date(`${dayKey}T00:00:00`).toLocaleDateString(locale === "nl" ? "nl-BE" : "fr-BE", {
@@ -37,7 +37,6 @@ export default function AgendaPage() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [joinContext, setJoinContext] = useState<{ trackId: string } | null>(null);
-  const [editEntry, setEditEntry] = useState<SessionParticipant | null>(null);
 
   // Pré-remplit le filtre avec la piste favorite du pilote, une seule fois au chargement
   // du profil — n'écrase jamais un choix que le pilote ferait ensuite manuellement.
@@ -45,7 +44,7 @@ export default function AgendaPage() {
   useEffect(() => {
     if (!appliedFavoriteRef.current && profile) {
       appliedFavoriteRef.current = true;
-      if (profile.favoriteTrackId) setTrackFilter(profile.favoriteTrackId);
+      if (profile.favoriteTrackIds?.[0]) setTrackFilter(profile.favoriteTrackIds[0]);
     }
   }, [profile]);
 
@@ -190,14 +189,6 @@ export default function AgendaPage() {
             onChanged={load}
             onJoinClick={() => {
               setJoinContext({ trackId: s.trackId });
-              setEditEntry(null);
-              setModalOpen(true);
-            }}
-            onEditClick={() => {
-              const entry = user ? s.participants.find((p) => p.uid === user.uid) : undefined;
-              if (!entry) return;
-              setJoinContext({ trackId: s.trackId });
-              setEditEntry(entry);
               setModalOpen(true);
             }}
           />
@@ -250,16 +241,11 @@ export default function AgendaPage() {
       {modalOpen && (
         <SessionFormModal
           fixedTrackId={joinContext?.trackId}
-          defaultTrackId={!joinContext ? (trackFilter || profile?.favoriteTrackId || undefined) : undefined}
+          defaultTrackId={!joinContext ? (trackFilter || profile?.favoriteTrackIds?.[0] || undefined) : undefined}
           fixedDayKey={selectedDayKey}
-          editEntry={editEntry ?? undefined}
-          onClose={() => {
-            setModalOpen(false);
-            setEditEntry(null);
-          }}
+          onClose={() => setModalOpen(false)}
           onSaved={() => {
             setModalOpen(false);
-            setEditEntry(null);
             load();
           }}
         />

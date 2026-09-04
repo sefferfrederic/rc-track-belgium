@@ -17,7 +17,7 @@ import { fetchUserCount } from "@/lib/firebase/auth";
 import { localizedText } from "@/lib/localize";
 import { todayDayKey } from "@/lib/date";
 import { consumeLastVisit } from "@/lib/lastVisit";
-import type { RidingSession, Track, Taxonomy, RcEvent, CarSetup, Listing, SessionParticipant } from "@/types";
+import type { RidingSession, Track, Taxonomy, RcEvent, CarSetup, Listing } from "@/types";
 
 type NewsItem =
   | { type: "session"; createdAt: number; session: RidingSession }
@@ -37,7 +37,6 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [joinContext, setJoinContext] = useState<{ trackId: string; dayKey: string } | null>(null);
-  const [editEntry, setEditEntry] = useState<SessionParticipant | null>(null);
 
   const load = useCallback(() => {
     if (!user) {
@@ -67,12 +66,20 @@ export default function HomePage() {
   }, [user]);
 
   useEffect(() => {
-    if (profile?.favoriteTrackId) {
-      fetchUpcomingSessionsForTrack(profile.favoriteTrackId, todayDayKey()).then(setFavoriteSessions);
-    } else {
+    const ids = profile?.favoriteTrackIds ?? [];
+    if (ids.length === 0) {
       setFavoriteSessions([]);
+      return;
     }
-  }, [profile?.favoriteTrackId]);
+    Promise.all(ids.map((id) => fetchUpcomingSessionsForTrack(id, todayDayKey(), 5))).then((lists) => {
+      const merged = lists
+        .flat()
+        .sort((a, b) => a.dayKey.localeCompare(b.dayKey) || a.windowStart - b.windowStart)
+        .slice(0, 8);
+      setFavoriteSessions(merged);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.favoriteTrackIds?.join(",")]);
 
   // "Nouveautés depuis ta dernière visite" — pas de notification push, mais un
   // rappel bien visible dès que tu rouvres l'app, sans rien à déployer côté serveur.
@@ -288,10 +295,10 @@ export default function HomePage() {
         </section>
       )}
 
-      {user && profile?.favoriteTrackId && (
+      {user && (profile?.favoriteTrackIds?.length ?? 0) > 0 && (
         <section>
           <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-track-muted">
-            {t("home_favorite_track")} — {trackName(profile.favoriteTrackId)}
+            {t("home_favorite_track")}
           </h2>
           {favoriteSessions.length === 0 ? (
             <p className="mt-3 text-sm text-track-muted">{t("home_favorite_none")}</p>
@@ -304,19 +311,22 @@ export default function HomePage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-semibold">
+                      {trackName(s.trackId)} ·{" "}
                       {new Date(`${s.dayKey}T00:00:00`).toLocaleDateString(locale === "nl" ? "nl-BE" : "fr-BE", {
                         weekday: "short",
                         day: "numeric",
                         month: "short",
                       })}
                     </span>
-                    <span className="text-track-muted">
+                    <span className="text-track-orange">
+                      {s.participants.length} {t("home_riders")}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-track-muted">
+                    <span>
                       {new Date(s.windowStart).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
                       {" → "}
                       {new Date(s.windowEnd).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
-                    </span>
-                    <span className="text-track-orange">
-                      {s.participants.length} {t("home_riders")}
                     </span>
                   </div>
                   <p className="text-xs text-track-muted">
@@ -352,14 +362,6 @@ export default function HomePage() {
               onChanged={load}
               onJoinClick={() => {
                 setJoinContext({ trackId: s.trackId, dayKey: s.dayKey });
-                setEditEntry(null);
-                setModalOpen(true);
-              }}
-              onEditClick={() => {
-                const entry = user ? s.participants.find((p) => p.uid === user.uid) : undefined;
-                if (!entry) return;
-                setJoinContext({ trackId: s.trackId, dayKey: s.dayKey });
-                setEditEntry(entry);
                 setModalOpen(true);
               }}
             />
@@ -370,16 +372,11 @@ export default function HomePage() {
       {modalOpen && (
         <SessionFormModal
           fixedTrackId={joinContext?.trackId}
-          defaultTrackId={!joinContext ? profile?.favoriteTrackId || undefined : undefined}
+          defaultTrackId={!joinContext ? profile?.favoriteTrackIds?.[0] || undefined : undefined}
           fixedDayKey={joinContext?.dayKey ?? todayDayKey()}
-          editEntry={editEntry ?? undefined}
-          onClose={() => {
-            setModalOpen(false);
-            setEditEntry(null);
-          }}
+          onClose={() => setModalOpen(false)}
           onSaved={() => {
             setModalOpen(false);
-            setEditEntry(null);
             load();
           }}
         />

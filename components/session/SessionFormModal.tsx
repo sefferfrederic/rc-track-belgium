@@ -11,10 +11,6 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { todayDayKey } from "@/lib/date";
 import type { Track, Taxonomy, CertaintyLevel, SessionParticipant } from "@/types";
 
-function timeStrFromTs(ts: number): string {
-  return new Date(ts).toTimeString().slice(0, 5);
-}
-
 function roundedNowTimeStr(): string {
   const d = new Date();
   d.setMinutes(Math.ceil(d.getMinutes() / 30) * 30, 0, 0);
@@ -35,16 +31,20 @@ interface Props {
   fixedTrackId?: string; // si fourni : piste imposée et verrouillée (rejoindre une session précise, ou "créer ici" depuis la fiche piste)
   defaultTrackId?: string; // si fourni : piste pré-sélectionnée mais modifiable (ex. piste favorite du pilote)
   fixedDayKey?: string; // si fourni : jour déjà choisi (ex. depuis le calendrier)
-  editEntry?: SessionParticipant; // si fourni : on modifie cette participation existante au lieu d'en créer une nouvelle
+  initialEntry?: SessionParticipant; // si fourni : pré-remplit avec cette inscription existante (mode édition)
   onClose: () => void;
   onSaved: () => void;
+}
+
+function timeStrFromTs(ts: number): string {
+  return new Date(ts).toTimeString().slice(0, 5);
 }
 
 export default function SessionFormModal({
   fixedTrackId,
   defaultTrackId,
   fixedDayKey,
-  editEntry,
+  initialEntry,
   onClose,
   onSaved,
 }: Props) {
@@ -55,14 +55,14 @@ export default function SessionFormModal({
   const [trackId, setTrackId] = useState(fixedTrackId ?? defaultTrackId ?? "");
   const [dayKey, setDayKey] = useState(fixedDayKey ?? todayDayKey());
   const [startTime, setStartTime] = useState(
-    editEntry ? timeStrFromTs(editEntry.start) : roundedNowTimeStr()
+    initialEntry ? timeStrFromTs(initialEntry.start) : roundedNowTimeStr()
   );
   const [endTime, setEndTime] = useState(
-    editEntry ? timeStrFromTs(editEntry.end) : addHoursToTimeStr(roundedNowTimeStr(), 2)
+    initialEntry ? timeStrFromTs(initialEntry.end) : addHoursToTimeStr(roundedNowTimeStr(), 2)
   );
-  const [certainty, setCertainty] = useState<CertaintyLevel>(editEntry?.certainty ?? 75);
-  const [disciplineId, setDisciplineId] = useState(editEntry?.disciplineId ?? "");
-  const [scaleId, setScaleId] = useState(editEntry?.scaleId ?? "");
+  const [certainty, setCertainty] = useState<CertaintyLevel>(initialEntry?.certainty ?? 75);
+  const [disciplineId, setDisciplineId] = useState(initialEntry?.disciplineId ?? "");
+  const [scaleId, setScaleId] = useState(initialEntry?.scaleId ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -136,7 +136,7 @@ export default function SessionFormModal({
       <div className="flex max-h-[90vh] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-t-xl2 border border-track-border bg-track-surface p-5 md:rounded-xl2">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-lg font-bold uppercase">
-            {editEntry ? t("session_edit") : fixedTrackId ? t("session_join") : t("session_new")}
+            {initialEntry ? t("session_edit_participation") : fixedTrackId ? t("session_join") : t("session_new")}
           </h2>
           <button onClick={onClose} aria-label={t("close")}>
             <X size={20} className="text-track-muted" />
@@ -262,7 +262,7 @@ export default function SessionFormModal({
         {error && <p className="text-sm text-track-red">{error}</p>}
 
         <Button onClick={handleSubmit} disabled={saving || !trackId} className="w-full">
-          {saving ? t("session_saving") : editEntry ? t("session_save_changes") : t("session_validate")}
+          {saving ? t("session_saving") : t("session_validate")}
         </Button>
       </div>
     </div>

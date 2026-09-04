@@ -30,10 +30,10 @@ export const translations = {
     fr: "Personne n'a encore déclaré de session aujourd'hui. Sois le premier !",
     nl: "Nog niemand heeft vandaag een sessie doorgegeven. Wees de eerste!",
   },
-  home_favorite_track: { fr: "Ta piste favorite", nl: "Jouw favoriete circuit" },
+  home_favorite_track: { fr: "Tes pistes favorites", nl: "Jouw favoriete circuits" },
   home_favorite_none: {
-    fr: "Rien de prévu prochainement sur ta piste favorite.",
-    nl: "Niets gepland op je favoriete circuit binnenkort.",
+    fr: "Rien de prévu prochainement sur tes pistes favorites.",
+    nl: "Niets gepland op je favoriete circuits binnenkort.",
   },
   home_riders: { fr: "pilotes", nl: "piloten" },
 
@@ -51,10 +51,10 @@ export const translations = {
 
   // --- Profil ---
   profile_nickname_label: { fr: "Pseudo / Prénom", nl: "Bijnaam / Voornaam" },
-  profile_favorite_track: { fr: "Piste favorite", nl: "Favoriete circuit" },
+  profile_favorite_track: { fr: "Pistes favorites", nl: "Favoriete circuits" },
   profile_favorite_hint: {
-    fr: "Utilisée pour l'aperçu rapide des prochaines sessions sur l'Accueil.",
-    nl: "Gebruikt voor het snelle overzicht van komende sessies op de startpagina.",
+    fr: "Sélectionne une ou plusieurs pistes. Utilisées pour l'aperçu rapide sur l'Accueil et les notifications de nouvelles sessions.",
+    nl: "Selecteer een of meerdere circuits. Gebruikt voor het snelle overzicht op de startpagina en meldingen over nieuwe sessies.",
   },
   profile_no_favorite: { fr: "Aucune piste favorite", nl: "Geen favoriet circuit" },
   profile_sessions: { fr: "Sessions", nl: "Sessies" },
@@ -115,9 +115,8 @@ export const translations = {
   session_not_specified: { fr: "Non précisé", nl: "Niet gespecifieerd" },
   session_validate: { fr: "Valider ma session", nl: "Sessie bevestigen" },
   session_saving: { fr: "Enregistrement…", nl: "Opslaan…" },
-  session_edit: { fr: "Modifier ma participation", nl: "Deelname wijzigen" },
-  session_save_changes: { fr: "Enregistrer les modifications", nl: "Wijzigingen opslaan" },
   session_cancel_participation: { fr: "Annuler ma participation", nl: "Deelname annuleren" },
+  session_edit_participation: { fr: "Modifier", nl: "Wijzigen" },
   session_cancelling: { fr: "Annulation…", nl: "Annuleren…" },
   session_peak: { fr: "Pic de fréquentation", nl: "Drukste moment" },
   session_chat: { fr: "Chat", nl: "Chat" },
