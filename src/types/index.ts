@@ -8,7 +8,7 @@ export interface UserProfile {
   displayName: string; // pseudo ou prénom
   photoURL: string | null;
   email: string | null;
-  favoriteTrackId: string | null; // une seule piste favorite
+  favoriteTrackIds: string[]; // pistes favorites (aucune contrainte d'échelle, juste la présence dans la liste)
   role: UserRole;
   createdAt: number; // timestamp ms
   stats: {

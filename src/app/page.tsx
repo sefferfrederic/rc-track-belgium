@@ -66,12 +66,20 @@ export default function HomePage() {
   }, [user]);
 
   useEffect(() => {
-    if (profile?.favoriteTrackId) {
-      fetchUpcomingSessionsForTrack(profile.favoriteTrackId, todayDayKey()).then(setFavoriteSessions);
-    } else {
+    const ids = profile?.favoriteTrackIds ?? [];
+    if (ids.length === 0) {
       setFavoriteSessions([]);
+      return;
     }
-  }, [profile?.favoriteTrackId]);
+    Promise.all(ids.map((id) => fetchUpcomingSessionsForTrack(id, todayDayKey(), 5))).then((lists) => {
+      const merged = lists
+        .flat()
+        .sort((a, b) => a.dayKey.localeCompare(b.dayKey) || a.windowStart - b.windowStart)
+        .slice(0, 8);
+      setFavoriteSessions(merged);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.favoriteTrackIds?.join(",")]);
 
   // "Nouveautés depuis ta dernière visite" — pas de notification push, mais un
   // rappel bien visible dès que tu rouvres l'app, sans rien à déployer côté serveur.
@@ -287,10 +295,10 @@ export default function HomePage() {
         </section>
       )}
 
-      {user && profile?.favoriteTrackId && (
+      {user && (profile?.favoriteTrackIds?.length ?? 0) > 0 && (
         <section>
           <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-track-muted">
-            {t("home_favorite_track")} — {trackName(profile.favoriteTrackId)}
+            {t("home_favorite_track")}
           </h2>
           {favoriteSessions.length === 0 ? (
             <p className="mt-3 text-sm text-track-muted">{t("home_favorite_none")}</p>
@@ -303,19 +311,22 @@ export default function HomePage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-semibold">
+                      {trackName(s.trackId)} ·{" "}
                       {new Date(`${s.dayKey}T00:00:00`).toLocaleDateString(locale === "nl" ? "nl-BE" : "fr-BE", {
                         weekday: "short",
                         day: "numeric",
                         month: "short",
                       })}
                     </span>
-                    <span className="text-track-muted">
+                    <span className="text-track-orange">
+                      {s.participants.length} {t("home_riders")}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-track-muted">
+                    <span>
                       {new Date(s.windowStart).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
                       {" → "}
                       {new Date(s.windowEnd).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
-                    </span>
-                    <span className="text-track-orange">
-                      {s.participants.length} {t("home_riders")}
                     </span>
                   </div>
                   <p className="text-xs text-track-muted">
@@ -361,7 +372,7 @@ export default function HomePage() {
       {modalOpen && (
         <SessionFormModal
           fixedTrackId={joinContext?.trackId}
-          defaultTrackId={!joinContext ? profile?.favoriteTrackId || undefined : undefined}
+          defaultTrackId={!joinContext ? profile?.favoriteTrackIds?.[0] || undefined : undefined}
           fixedDayKey={joinContext?.dayKey ?? todayDayKey()}
           onClose={() => setModalOpen(false)}
           onSaved={() => {

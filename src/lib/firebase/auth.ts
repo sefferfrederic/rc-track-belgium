@@ -17,6 +17,23 @@ export async function fetchUserCount(): Promise<number> {
   return snap.data().count;
 }
 
+/**
+ * Normalise un document /users/{uid} brut en UserProfile.
+ * Migration douce : les anciens profils n'ont qu'un `favoriteTrackId` (string|null) ;
+ * on le convertit à la volée en `favoriteTrackIds` (tableau) sans script de migration
+ * Firestore. Le document sera réécrit au nouveau format dès que l'utilisateur modifie
+ * ses pistes favorites (voir profil/page.tsx).
+ */
+export function normalizeProfile(data: Record<string, unknown>): UserProfile {
+  const legacyId = data.favoriteTrackId;
+  const favoriteTrackIds = Array.isArray(data.favoriteTrackIds)
+    ? (data.favoriteTrackIds as string[])
+    : typeof legacyId === "string"
+      ? [legacyId]
+      : [];
+  return { ...(data as object), favoriteTrackIds } as UserProfile;
+}
+
 
 /**
  * Crée le document Firestore /users/{uid} s'il n'existe pas encore.
@@ -39,7 +56,7 @@ async function ensureUserProfile(user: User): Promise<boolean> {
     displayName: defaultName,
     photoURL: user.photoURL,
     email: user.email,
-    favoriteTrackId: null,
+    favoriteTrackIds: [],
     role: "user",
     createdAt: serverTimestamp(),
     stats: { sessionsCount: 0 },

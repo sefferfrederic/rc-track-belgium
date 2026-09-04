@@ -44,7 +44,7 @@ export default function AgendaPage() {
   useEffect(() => {
     if (!appliedFavoriteRef.current && profile) {
       appliedFavoriteRef.current = true;
-      if (profile.favoriteTrackId) setTrackFilter(profile.favoriteTrackId);
+      if (profile.favoriteTrackIds?.[0]) setTrackFilter(profile.favoriteTrackIds[0]);
     }
   }, [profile]);
 
@@ -241,7 +241,7 @@ export default function AgendaPage() {
       {modalOpen && (
         <SessionFormModal
           fixedTrackId={joinContext?.trackId}
-          defaultTrackId={!joinContext ? (trackFilter || profile?.favoriteTrackId || undefined) : undefined}
+          defaultTrackId={!joinContext ? (trackFilter || profile?.favoriteTrackIds?.[0] || undefined) : undefined}
           fixedDayKey={selectedDayKey}
           onClose={() => setModalOpen(false)}
           onSaved={() => {
