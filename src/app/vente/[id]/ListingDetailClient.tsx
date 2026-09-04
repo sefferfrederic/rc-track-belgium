@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
@@ -77,7 +78,9 @@ export default function ListingDetailClient({ initialListing }: { initialListing
       {listing.photoURLs.length > 0 && (
         <div className="flex gap-2">
           {listing.photoURLs.map((url) => (
-            <img key={url} src={url} alt={listing.title} className="h-48 w-full rounded-xl2 object-cover" />
+            <div key={url} className="relative h-48 w-full overflow-hidden rounded-xl2">
+              <Image src={url} alt={listing.title} fill sizes="50vw" className="object-cover" />
+            </div>
           ))}
         </div>
       )}

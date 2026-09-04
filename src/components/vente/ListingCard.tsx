@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { Listing } from "@/types";
@@ -19,7 +20,13 @@ export default function ListingCard({ listing }: { listing: Listing }) {
     >
       <div className="relative aspect-video w-full bg-track-surface2">
         {listing.photoURLs[0] ? (
-          <img src={listing.photoURLs[0]} alt={listing.title} className="h-full w-full object-cover" />
+          <Image
+            src={listing.photoURLs[0]}
+            alt={listing.title}
+            fill
+            sizes="(max-width: 640px) 100vw, 50vw"
+            className="object-cover"
+          />
         ) : (
           <div className="flex h-full items-center justify-center text-track-muted">🛒</div>
         )}

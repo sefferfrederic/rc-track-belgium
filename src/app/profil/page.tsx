@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "@/lib/firebase/client";
+import { compressImage } from "@/lib/compressImage";
 import { signOut } from "@/lib/firebase/auth";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -63,8 +64,9 @@ function ProfilPageInner() {
     if (!file || !user) return;
     setSaving(true);
     try {
+      const compressed = await compressImage(file, 400, 0.85); // avatar : petit format, suffisant
       const storageRef = ref(storage, `avatars/${user.uid}`);
-      await uploadBytes(storageRef, file);
+      await uploadBytes(storageRef, compressed);
       const url = await getDownloadURL(storageRef);
       await updateDoc(doc(db, "users", user.uid), { photoURL: url });
     } finally {

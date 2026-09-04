@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
+import Image from "next/image";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase/client";
+import { compressImage } from "@/lib/compressImage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
@@ -90,9 +92,10 @@ export default function ListingFormModal({
     if (!file || photoURLs.length >= 2) return;
     setUploading(true);
     try {
-      const path = `listings/${sellerUid}/${Date.now()}-${file.name}`;
+      const compressed = await compressImage(file);
+      const path = `listings/${sellerUid}/${Date.now()}-${compressed.name}`;
       const storageRef = ref(storage, path);
-      await uploadBytes(storageRef, file);
+      await uploadBytes(storageRef, compressed);
       const url = await getDownloadURL(storageRef);
       setPhotoURLs((prev) => [...prev, url]);
     } finally {
@@ -319,7 +322,7 @@ export default function ListingFormModal({
           <div className="flex gap-2">
             {photoURLs.map((url) => (
               <div key={url} className="relative h-20 w-20">
-                <img src={url} alt="" className="h-full w-full rounded-lg object-cover" />
+                <Image src={url} alt="" fill sizes="80px" className="rounded-lg object-cover" />
                 <button
                   onClick={() => removePhoto(url)}
                   className="absolute -right-1 -top-1 rounded-full bg-track-red p-0.5 text-white"

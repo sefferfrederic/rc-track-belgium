@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { MessageCircle } from "lucide-react";
+import Image from "next/image";
 import CertaintyGauge from "@/components/ui/CertaintyGauge";
 import Button from "@/components/ui/Button";
 import SessionChat from "@/components/session/SessionChat";
@@ -81,7 +82,9 @@ export default function SessionCard({
             <li key={p.uid} className="flex items-center justify-between text-sm">
               <span className="flex items-center gap-2">
                 {p.photoURL ? (
-                  <img src={p.photoURL} alt="" className="h-6 w-6 rounded-full object-cover" />
+                  <span className="relative block h-6 w-6 overflow-hidden rounded-full">
+                    <Image src={p.photoURL} alt="" fill sizes="24px" className="object-cover" />
+                  </span>
                 ) : (
                   <span className="h-6 w-6 rounded-full bg-track-surface2" />
                 )}

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Home, ShoppingCart } from "lucide-react";
+import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -64,7 +65,9 @@ export default function TopBar() {
 
           <Link href={user ? "/profil" : "/login"} className="flex items-center gap-2">
             {user && profile?.photoURL ? (
-              <img src={profile.photoURL} alt={profile.displayName} className="h-9 w-9 rounded-full object-cover ring-2 ring-track-orange/50" />
+              <span className="relative block h-9 w-9 overflow-hidden rounded-full ring-2 ring-track-orange/50">
+                <Image src={profile.photoURL} alt={profile.displayName} fill sizes="36px" className="object-cover" />
+              </span>
             ) : (
               <span className="rounded-full border border-track-border px-3 py-1.5 font-display text-xs font-semibold uppercase tracking-wide text-track-muted">
                 {user ? t("nav_profile") : t("nav_login")}
