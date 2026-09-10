@@ -12,16 +12,18 @@ import { fetchSessionsForDay, fetchUpcomingSessionsForTrack, fetchRecentSessions
 import { fetchTracks, fetchTaxonomies } from "@/lib/firebase/tracks";
 import { fetchRecentEvents, setParticipation } from "@/lib/firebase/events";
 import { fetchPublicSetups } from "@/lib/firebase/cars";
+import { fetchActiveListings } from "@/lib/firebase/listings";
 import { fetchUserCount } from "@/lib/firebase/auth";
 import { localizedText } from "@/lib/localize";
 import { todayDayKey } from "@/lib/date";
 import { consumeLastVisit } from "@/lib/lastVisit";
-import type { RidingSession, Track, Taxonomy, RcEvent, CarSetup } from "@/types";
+import type { RidingSession, Track, Taxonomy, RcEvent, CarSetup, Listing } from "@/types";
 
 type NewsItem =
   | { type: "session"; createdAt: number; session: RidingSession }
   | { type: "event"; createdAt: number; event: RcEvent }
-  | { type: "setup"; createdAt: number; setup: CarSetup };
+  | { type: "setup"; createdAt: number; setup: CarSetup }
+  | { type: "listing"; createdAt: number; listing: Listing };
 
 export default function HomePage() {
   const { user, profile } = useAuth();
@@ -64,21 +66,29 @@ export default function HomePage() {
   }, [user]);
 
   useEffect(() => {
-    if (profile?.favoriteTrackId) {
-      fetchUpcomingSessionsForTrack(profile.favoriteTrackId, todayDayKey()).then(setFavoriteSessions);
-    } else {
+    const ids = profile?.favoriteTrackIds ?? [];
+    if (ids.length === 0) {
       setFavoriteSessions([]);
+      return;
     }
-  }, [profile?.favoriteTrackId]);
+    Promise.all(ids.map((id) => fetchUpcomingSessionsForTrack(id, todayDayKey(), 5))).then((lists) => {
+      const merged = lists
+        .flat()
+        .sort((a, b) => a.dayKey.localeCompare(b.dayKey) || a.windowStart - b.windowStart)
+        .slice(0, 8);
+      setFavoriteSessions(merged);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.favoriteTrackIds?.join(",")]);
 
   // "Nouveautés depuis ta dernière visite" — pas de notification push, mais un
   // rappel bien visible dès que tu rouvres l'app, sans rien à déployer côté serveur.
   useEffect(() => {
     if (!user) return;
     const since = consumeLastVisit();
-    Promise.all([fetchRecentSessions(since), fetchRecentEvents(since), fetchPublicSetups()])
+    Promise.all([fetchRecentSessions(since), fetchRecentEvents(since), fetchPublicSetups(), fetchActiveListings()])
       .then(
-        ([recentSessions, recentEvents, publicSetups]) => {
+        ([recentSessions, recentEvents, publicSetups, activeListings]) => {
           const now = Date.now();
           const items: NewsItem[] = [
             ...recentSessions
@@ -90,6 +100,9 @@ export default function HomePage() {
             ...publicSetups
               .filter((s) => s.createdAt > since)
               .map((setup): NewsItem => ({ type: "setup", createdAt: setup.createdAt, setup })),
+            ...activeListings
+              .filter((l) => l.createdAt > since && !l.sold)
+              .map((listing): NewsItem => ({ type: "listing", createdAt: listing.createdAt, listing })),
           ]
             .sort((a, b) => b.createdAt - a.createdAt)
             .slice(0, 6);
@@ -245,20 +258,36 @@ export default function HomePage() {
                   </div>
                 );
               }
-              const setup = item.setup;
+              if (item.type === "setup") {
+                const setup = item.setup;
+                return (
+                  <Link
+                    key={`p-${setup.id}`}
+                    href="/reglages-publics"
+                    className="block rounded-xl2 border border-track-border bg-track-surface p-3"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-track-muted">
+                      {t("whatsnew_new_setup")}
+                    </p>
+                    <p className="mt-0.5 font-display text-base font-bold">{setup.carName}</p>
+                    <p className="text-sm text-track-muted">
+                      {t("garage_by")} {setup.authorName}
+                    </p>
+                  </Link>
+                );
+              }
+              const listing = item.listing;
               return (
                 <Link
-                  key={`p-${setup.id}`}
-                  href="/reglages-publics"
+                  key={`l-${listing.id}`}
+                  href={`/vente/${listing.id}`}
                   className="block rounded-xl2 border border-track-border bg-track-surface p-3"
                 >
                   <p className="text-xs font-semibold uppercase tracking-wide text-track-muted">
-                    {t("whatsnew_new_setup")}
+                    {t("whatsnew_new_listing")}
                   </p>
-                  <p className="mt-0.5 font-display text-base font-bold">{setup.carName}</p>
-                  <p className="text-sm text-track-muted">
-                    {t("garage_by")} {setup.authorName}
-                  </p>
+                  <p className="mt-0.5 font-display text-base font-bold">{listing.title}</p>
+                  <p className="text-sm text-track-orange">{listing.price} €</p>
                 </Link>
               );
             })}
@@ -266,10 +295,10 @@ export default function HomePage() {
         </section>
       )}
 
-      {user && profile?.favoriteTrackId && (
+      {user && (profile?.favoriteTrackIds?.length ?? 0) > 0 && (
         <section>
           <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-track-muted">
-            {t("home_favorite_track")} — {trackName(profile.favoriteTrackId)}
+            {t("home_favorite_track")}
           </h2>
           {favoriteSessions.length === 0 ? (
             <p className="mt-3 text-sm text-track-muted">{t("home_favorite_none")}</p>
@@ -282,19 +311,22 @@ export default function HomePage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-semibold">
+                      {trackName(s.trackId)} ·{" "}
                       {new Date(`${s.dayKey}T00:00:00`).toLocaleDateString(locale === "nl" ? "nl-BE" : "fr-BE", {
                         weekday: "short",
                         day: "numeric",
                         month: "short",
                       })}
                     </span>
-                    <span className="text-track-muted">
+                    <span className="text-track-orange">
+                      {s.participants.length} {t("home_riders")}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-track-muted">
+                    <span>
                       {new Date(s.windowStart).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
                       {" → "}
                       {new Date(s.windowEnd).toLocaleTimeString(locale === "nl" ? "nl-BE" : "fr-BE", { hour: "2-digit", minute: "2-digit" })}
-                    </span>
-                    <span className="text-track-orange">
-                      {s.participants.length} {t("home_riders")}
                     </span>
                   </div>
                   <p className="text-xs text-track-muted">
@@ -340,6 +372,7 @@ export default function HomePage() {
       {modalOpen && (
         <SessionFormModal
           fixedTrackId={joinContext?.trackId}
+          defaultTrackId={!joinContext ? profile?.favoriteTrackIds?.[0] || undefined : undefined}
           fixedDayKey={joinContext?.dayKey ?? todayDayKey()}
           onClose={() => setModalOpen(false)}
           onSaved={() => {

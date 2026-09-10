@@ -3,17 +3,27 @@
 
 export type UserRole = "admin" | "user";
 
+export interface NotificationPrefs {
+  sessionsNewOnFavorite: boolean; // nouvelle session sur une piste favorite
+  sessionsReminder: boolean; // rappel 2h avant une session où je suis inscrit
+  marketplaceNew: boolean; // nouvelle annonce "Vente entre pilotes"
+  garageNewSetup: boolean; // nouveau setup public dans "Mon Garage"
+  announcements: boolean; // bannière de communication admin
+}
+
 export interface UserProfile {
   uid: string;
   displayName: string; // pseudo ou prénom
   photoURL: string | null;
   email: string | null;
-  favoriteTrackId: string | null; // une seule piste favorite
+  favoriteTrackIds: string[]; // pistes favorites (aucune contrainte d'échelle, juste la présence dans la liste)
   role: UserRole;
   createdAt: number; // timestamp ms
   stats: {
     sessionsCount: number;
   };
+  notificationPrefs?: NotificationPrefs; // absent = toutes activées par défaut, voir lib/notifications.ts
+  fcmTokens?: string[]; // un token par appareil ayant activé les notifications push
 }
 
 export interface Track {
@@ -68,6 +78,7 @@ export interface SessionParticipant {
   disciplineId?: string | null;
   scaleId?: string | null;
   joinedAt: number;
+  reminderSentAt?: number | null; // évite les rappels push en double (voir api/cron/session-reminders)
 }
 
 export interface RcEvent {
@@ -148,6 +159,69 @@ export interface CarSetup {
   shockOilRear: string | null;
   notes: string;
   isPublic: boolean;
+  createdAt: number;
+}
+
+// --- Vente entre pilotes ---
+
+export type ListingCategory =
+  | "voiture_complete"
+  | "chassis"
+  | "electronique"
+  | "moteur"
+  | "esc"
+  | "servo"
+  | "radio";
+
+export type ListingCondition =
+  | "neuf"
+  | "occasion_comme_neuf"
+  | "occasion_usure"
+  | "use_fonctionnel"
+  | "pour_pieces";
+
+export interface Listing {
+  id: string;
+  sellerUid: string;
+  sellerName: string;
+  category: ListingCategory;
+  title: string;
+  description: string;
+  price: number; // euros
+  photoURLs: string[]; // max 2
+  sold: boolean;
+  brand?: string | null; // marque véhicule/châssis — uniquement voiture_complete / chassis
+  escBrand?: string | null; // marque ESC en texte libre — uniquement catégorie esc
+  servoBrand?: string | null; // marque servo en texte libre — uniquement catégorie servo
+  condition?: ListingCondition | null;
+  soldWithTires?: boolean | null; // uniquement voiture_complete / chassis
+  soldWithBody?: boolean | null; // uniquement voiture_complete / chassis
+  createdAt: number;
+  expiresAt: number; // createdAt + 30 jours, purgé automatiquement à cette échéance
+}
+
+// Une conversation = une paire (annonce, acheteur). Le vendeur peut avoir
+// plusieurs conversations en parallèle pour la même annonce (une par acheteur intéressé).
+export interface Conversation {
+  id: string;
+  listingId: string;
+  listingTitle: string;
+  sellerUid: string;
+  sellerName: string;
+  buyerUid: string;
+  buyerName: string;
+  participantUids: string[]; // [sellerUid, buyerUid] — utilisé par les règles de sécurité
+  lastMessageText: string;
+  lastMessageAt: number;
+  createdAt: number;
+}
+
+export interface ConversationMessage {
+  id: string;
+  conversationId: string;
+  authorUid: string;
+  authorName: string;
+  text: string;
   createdAt: number;
 }
 

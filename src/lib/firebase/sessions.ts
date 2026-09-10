@@ -88,10 +88,12 @@ export interface UpsertSessionParams {
 /** Crée ou rejoint une session : ajoute/remplace l'entrée du pilote et recalcule le regroupement. */
 export async function upsertSessionEntry(params: UpsertSessionParams): Promise<void> {
   const ref = doc(db, "sessions", sessionDocId(params.trackId, params.dayKey));
+  let wasCreated = false;
 
   await runTransaction(db, async (tx) => {
     const snap = await tx.get(ref);
     const existing = snap.exists() ? (snap.data() as RidingSession) : null;
+    wasCreated = !existing;
 
     let participants: SessionParticipant[] = existing?.participants ?? [];
     participants = participants.filter((p) => p.uid !== params.uid);
@@ -123,6 +125,17 @@ export async function upsertSessionEntry(params: UpsertSessionParams): Promise<v
       updatedAt: Date.now(),
     });
   });
+
+  // Notification aux pilotes ayant cette piste en favori — uniquement pour une
+  // toute nouvelle session, pas à chaque personne qui la rejoint. "Best-effort" :
+  // ne bloque jamais l'inscription elle-même si l'envoi échoue.
+  if (wasCreated) {
+    fetch("/api/notify/session-created", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ trackId: params.trackId, dayKey: params.dayKey, creatorUid: params.uid }),
+    }).catch(() => {});
+  }
 }
 
 /** Retire un pilote d'une session (annulation). Supprime le document si plus personne ne roule. */

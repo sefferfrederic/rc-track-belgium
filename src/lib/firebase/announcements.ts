@@ -49,6 +49,12 @@ export async function createAnnouncement(input: AnnouncementInput, createdBy: st
     createdAt: Date.now(),
     createdBy,
   });
+
+  fetch("/api/notify/announcement-published", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title: input.title, message: input.message }),
+  }).catch(() => {});
 }
 
 export async function setAnnouncementActive(id: string, active: boolean): Promise<void> {

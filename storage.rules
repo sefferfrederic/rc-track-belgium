@@ -36,5 +36,15 @@ service firebase.storage {
         && request.resource.size < 8 * 1024 * 1024
         && request.resource.contentType.matches('image/.*');
     }
+
+    // Photos d'annonces (module Vente) : lecture publique, écriture réservée au
+    // vendeur (son propre uid). Supprimées automatiquement avec l'annonce après 30 jours.
+    match /listings/{uid}/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid
+        && request.resource.size < 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
   }
 }

@@ -1,0 +1,19 @@
+name: Rappels de session
+
+# Le plan Vercel Hobby ne permet qu'un cron par jour, insuffisant pour un
+# rappel "2h avant" précis. On appelle donc l'API toutes les 15 min depuis
+# GitHub Actions (gratuit), qui vérifie lui-même le secret CRON_SECRET.
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {} # permet aussi un déclenchement manuel depuis l'onglet Actions
+
+jobs:
+  call-reminder-endpoint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Appel de /api/cron/session-reminders
+        run: |
+          curl -sS -f \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://rc-tracks-belgium.be/api/cron/session-reminders"

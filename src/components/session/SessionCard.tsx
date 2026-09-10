@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { MessageCircle, Facebook } from "lucide-react";
+import Image from "next/image";
 import CertaintyGauge from "@/components/ui/CertaintyGauge";
 import Button from "@/components/ui/Button";
 import SessionChat from "@/components/session/SessionChat";
+import SessionFormModal from "@/components/session/SessionFormModal";
 import { cancelSessionEntry } from "@/lib/firebase/sessions";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -31,6 +33,7 @@ export default function SessionCard({
   const { t, locale } = useLanguage();
   const [cancelling, setCancelling] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   const taxLabel = (id?: string | null) => (id ? taxonomies.find((t) => t.id === id)?.label : null);
 
@@ -96,7 +99,9 @@ export default function SessionCard({
             <li key={p.uid} className="flex items-center justify-between text-sm">
               <span className="flex items-center gap-2">
                 {p.photoURL ? (
-                  <img src={p.photoURL} alt="" className="h-6 w-6 rounded-full object-cover" />
+                  <span className="relative block h-6 w-6 overflow-hidden rounded-full">
+                    <Image src={p.photoURL} alt="" fill sizes="24px" className="object-cover" />
+                  </span>
                 ) : (
                   <span className="h-6 w-6 rounded-full bg-track-surface2" />
                 )}
@@ -114,6 +119,9 @@ export default function SessionCard({
       <div className="mt-3 flex items-center gap-2">
         {myEntry ? (
           <>
+            <Button variant="ghost" onClick={() => setEditOpen(true)} className="!px-0">
+              {t("session_edit_participation")}
+            </Button>
             <Button variant="ghost" onClick={handleCancel} disabled={cancelling} className="!px-0">
               {cancelling ? t("session_cancelling") : t("session_cancel_participation")}
             </Button>
@@ -142,6 +150,19 @@ export default function SessionCard({
           sessionId={session.id}
           sessionWindowEnd={session.windowEnd}
           onClose={() => setChatOpen(false)}
+        />
+      )}
+
+      {editOpen && myEntry && (
+        <SessionFormModal
+          fixedTrackId={session.trackId}
+          fixedDayKey={session.dayKey}
+          initialEntry={myEntry}
+          onClose={() => setEditOpen(false)}
+          onSaved={() => {
+            setEditOpen(false);
+            onChanged();
+          }}
         />
       )}
     </div>

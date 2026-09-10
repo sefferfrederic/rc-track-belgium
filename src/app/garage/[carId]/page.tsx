@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
@@ -91,7 +92,9 @@ export default function CarDetailPage({ params }: { params: { carId: string } })
 
       <div className="flex items-center gap-3">
         {car.photoURL ? (
-          <img src={car.photoURL} alt={car.name} className="h-20 w-20 rounded-xl2 object-cover" />
+          <span className="relative block h-20 w-20 overflow-hidden rounded-xl2">
+            <Image src={car.photoURL} alt={car.name} fill sizes="80px" className="object-cover" />
+          </span>
         ) : (
           <span className="flex h-20 w-20 items-center justify-center rounded-xl2 bg-track-surface2 text-3xl">
             🏎️

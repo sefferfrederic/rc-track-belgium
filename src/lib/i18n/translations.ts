@@ -30,10 +30,10 @@ export const translations = {
     fr: "Personne n'a encore déclaré de session aujourd'hui. Sois le premier !",
     nl: "Nog niemand heeft vandaag een sessie doorgegeven. Wees de eerste!",
   },
-  home_favorite_track: { fr: "Ta piste favorite", nl: "Jouw favoriete circuit" },
+  home_favorite_track: { fr: "Tes pistes favorites", nl: "Jouw favoriete circuits" },
   home_favorite_none: {
-    fr: "Rien de prévu prochainement sur ta piste favorite.",
-    nl: "Niets gepland op je favoriete circuit binnenkort.",
+    fr: "Rien de prévu prochainement sur tes pistes favorites.",
+    nl: "Niets gepland op je favoriete circuits binnenkort.",
   },
   home_riders: { fr: "pilotes", nl: "piloten" },
 
@@ -51,10 +51,10 @@ export const translations = {
 
   // --- Profil ---
   profile_nickname_label: { fr: "Pseudo / Prénom", nl: "Bijnaam / Voornaam" },
-  profile_favorite_track: { fr: "Piste favorite", nl: "Favoriete circuit" },
+  profile_favorite_track: { fr: "Pistes favorites", nl: "Favoriete circuits" },
   profile_favorite_hint: {
-    fr: "Utilisée pour l'aperçu rapide des prochaines sessions sur l'Accueil.",
-    nl: "Gebruikt voor het snelle overzicht van komende sessies op de startpagina.",
+    fr: "Sélectionne une ou plusieurs pistes. Utilisées pour l'aperçu rapide sur l'Accueil et les notifications de nouvelles sessions.",
+    nl: "Selecteer een of meerdere circuits. Gebruikt voor het snelle overzicht op de startpagina en meldingen over nieuwe sessies.",
   },
   profile_no_favorite: { fr: "Aucune piste favorite", nl: "Geen favoriet circuit" },
   profile_sessions: { fr: "Sessions", nl: "Sessies" },
@@ -116,6 +116,7 @@ export const translations = {
   session_validate: { fr: "Valider ma session", nl: "Sessie bevestigen" },
   session_saving: { fr: "Enregistrement…", nl: "Opslaan…" },
   session_cancel_participation: { fr: "Annuler ma participation", nl: "Deelname annuleren" },
+  session_edit_participation: { fr: "Modifier", nl: "Wijzigen" },
   session_cancelling: { fr: "Annulation…", nl: "Annuleren…" },
   session_peak: { fr: "Pic de fréquentation", nl: "Drukste moment" },
   session_chat: { fr: "Chat", nl: "Chat" },
@@ -139,6 +140,7 @@ export const translations = {
   whatsnew_new_session: { fr: "Nouvelle session", nl: "Nieuwe sessie" },
   whatsnew_new_event: { fr: "Nouvel événement", nl: "Nieuw evenement" },
   whatsnew_new_setup: { fr: "Nouveau réglage partagé", nl: "Nieuwe gedeelde afstelling" },
+  whatsnew_new_listing: { fr: "Nouvelle annonce", nl: "Nieuwe advertentie" },
 
   // --- Mon Garage ---
   garage_title: { fr: "Mon garage", nl: "Mijn garage" },
@@ -223,6 +225,109 @@ export const translations = {
     nl: "Dit bericht definitief verwijderen?",
   },
   admin_announcement_delete: { fr: "Supprimer", nl: "Verwijderen" },
+
+  // --- Module Vente ---
+  nav_vente: { fr: "Vente", nl: "Verkoop" },
+  vente_kicker: { fr: "Entre pilotes", nl: "Tussen piloten" },
+  vente_title: { fr: "Petites annonces", nl: "Advertenties" },
+  vente_my_listings: { fr: "Mes annonces", nl: "Mijn advertenties" },
+  vente_new_listing: { fr: "Nouvelle annonce", nl: "Nieuwe advertentie" },
+  vente_none: { fr: "Aucune annonce pour l'instant.", nl: "Nog geen advertenties." },
+  vente_cat_all: { fr: "Tout", nl: "Alles" },
+  vente_cat_voiture_complete: { fr: "Voiture complète", nl: "Volledige auto" },
+  vente_cat_chassis: { fr: "Châssis", nl: "Chassis" },
+  vente_cat_electronique: { fr: "Électronique", nl: "Elektronica" },
+  vente_cat_moteur: { fr: "Moteur", nl: "Motor" },
+  vente_cat_esc: { fr: "ESC", nl: "ESC" },
+  vente_cat_servo: { fr: "Servo", nl: "Servo" },
+  vente_cat_radio: { fr: "Radio", nl: "Radio" },
+  vente_form_missing: { fr: "Titre et prix sont obligatoires.", nl: "Titel en prijs zijn verplicht." },
+  vente_form_accept_required: {
+    fr: "Coche la case pour confirmer que tu as compris la limite de 30 jours.",
+    nl: "Vink het vakje aan om te bevestigen dat je de limiet van 30 dagen hebt begrepen.",
+  },
+  vente_form_category: { fr: "Catégorie", nl: "Categorie" },
+  vente_form_title: { fr: "Titre", nl: "Titel" },
+  vente_form_price: { fr: "Prix", nl: "Prijs" },
+  vente_form_description: { fr: "Description", nl: "Beschrijving" },
+  vente_form_photos: { fr: "Photos (2 max)", nl: "Foto's (max 2)" },
+  vente_form_accept_30days: {
+    fr: "Je comprends que mon annonce sera automatiquement supprimée après 30 jours.",
+    nl: "Ik begrijp dat mijn advertentie na 30 dagen automatisch wordt verwijderd.",
+  },
+  vente_form_publish: { fr: "Publier l'annonce", nl: "Advertentie plaatsen" },
+  vente_form_publishing: { fr: "Publication…", nl: "Plaatsen…" },
+  vente_not_found: { fr: "Annonce introuvable ou expirée.", nl: "Advertentie niet gevonden of verlopen." },
+  vente_mark_sold: { fr: "Marquer comme vendu", nl: "Markeren als verkocht" },
+  vente_mark_available: { fr: "Remettre en vente", nl: "Opnieuw te koop zetten" },
+  vente_contact_seller: { fr: "Contacter le vendeur", nl: "Verkoper contacteren" },
+  vente_my_messages: { fr: "Mes messages", nl: "Mijn berichten" },
+  vente_no_messages: { fr: "Aucune conversation pour l'instant.", nl: "Nog geen gesprekken." },
+  vente_no_messages_yet: { fr: "Aucun message pour l'instant. Lance la discussion !", nl: "Nog geen berichten. Begin het gesprek!" },
+  vente_message_placeholder: { fr: "Écris un message…", nl: "Schrijf een bericht…" },
+  vente_share: { fr: "Partager cette annonce", nl: "Deze advertentie delen" },
+  vente_copy_link: { fr: "Copier le lien", nl: "Link kopiëren" },
+  vente_link_copied: { fr: "Lien copié !", nl: "Link gekopieerd!" },
+  vente_form_brand: { fr: "Marque", nl: "Merk" },
+  vente_form_brand_none: { fr: "Non précisé", nl: "Niet gespecificeerd" },
+  vente_form_brand_other: { fr: "Autre marque…", nl: "Ander merk…" },
+  vente_form_esc_brand: { fr: "Marque ESC", nl: "Merk ESC" },
+  vente_form_servo_brand: { fr: "Marque servo", nl: "Merk servo" },
+  vente_form_condition: { fr: "État", nl: "Staat" },
+  vente_form_condition_none: { fr: "Non précisé", nl: "Niet gespecificeerd" },
+  vente_form_with_tires: { fr: "Vendu avec pneus ?", nl: "Verkocht met banden?" },
+  vente_form_with_body: { fr: "Vendu avec carrosserie ?", nl: "Verkocht met carrosserie?" },
+
+  // --- Préférences de notifications ---
+  notif_prefs_title: { fr: "Notifications", nl: "Meldingen" },
+  notif_prefs_back: { fr: "Retour au profil", nl: "Terug naar profiel" },
+  notif_prefs_enable_hint: {
+    fr: "Active les notifications push pour ne rien rater sur cet appareil.",
+    nl: "Activeer pushmeldingen om niets te missen op dit toestel.",
+  },
+  notif_prefs_enable_button: { fr: "Activer sur cet appareil", nl: "Activeren op dit toestel" },
+  notif_prefs_enabling: { fr: "Activation…", nl: "Activeren…" },
+  notif_prefs_active_on_device: {
+    fr: "Notifications actives sur cet appareil.",
+    nl: "Meldingen actief op dit toestel.",
+  },
+  notif_prefs_denied: {
+    fr: "Permission refusée. Autorise les notifications dans les réglages de ton navigateur pour les activer.",
+    nl: "Toestemming geweigerd. Sta meldingen toe in je browserinstellingen om ze te activeren.",
+  },
+  notif_prefs_unsupported: {
+    fr: "Les notifications push ne sont pas prises en charge par ce navigateur.",
+    nl: "Pushmeldingen worden niet ondersteund door deze browser.",
+  },
+  notif_prefs_error: {
+    fr: "Impossible d'activer les notifications, réessaie.",
+    nl: "Kan meldingen niet activeren, probeer opnieuw.",
+  },
+  notif_cat_sessions_new_title: { fr: "Nouvelle session sur mes pistes favorites", nl: "Nieuwe sessie op mijn favoriete circuits" },
+  notif_cat_sessions_new_desc: {
+    fr: "Un pilote déclare rouler sur une de tes pistes favorites.",
+    nl: "Een piloot rijdt op een van je favoriete circuits.",
+  },
+  notif_cat_sessions_reminder_title: { fr: "Rappel avant mes sessions", nl: "Herinnering voor mijn sessies" },
+  notif_cat_sessions_reminder_desc: {
+    fr: "2h avant le début d'une session où tu es inscrit.",
+    nl: "2u voor het begin van een sessie waarvoor je ingeschreven bent.",
+  },
+  notif_cat_marketplace_title: { fr: "Nouvelles annonces", nl: "Nieuwe advertenties" },
+  notif_cat_marketplace_desc: {
+    fr: "Un objet est mis en vente entre pilotes.",
+    nl: "Een item wordt te koop aangeboden tussen piloten.",
+  },
+  notif_cat_garage_title: { fr: "Nouveaux setups publics", nl: "Nieuwe publieke setups" },
+  notif_cat_garage_desc: {
+    fr: "Un pilote partage un réglage de voiture public.",
+    nl: "Een piloot deelt een publieke wagensetup.",
+  },
+  notif_cat_announcements_title: { fr: "Annonces de l'équipe", nl: "Mededelingen van het team" },
+  notif_cat_announcements_desc: {
+    fr: "Bannières de communication publiées par l'administration.",
+    nl: "Communicatiebanners gepubliceerd door de administratie.",
+  },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

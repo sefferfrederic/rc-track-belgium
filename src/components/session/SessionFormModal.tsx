@@ -9,7 +9,7 @@ import { upsertSessionEntry } from "@/lib/firebase/sessions";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { todayDayKey } from "@/lib/date";
-import type { Track, Taxonomy, CertaintyLevel } from "@/types";
+import type { Track, Taxonomy, CertaintyLevel, SessionParticipant } from "@/types";
 
 function roundedNowTimeStr(): string {
   const d = new Date();
@@ -28,24 +28,41 @@ function addHoursToTimeStr(time: string, hours: number): string {
 }
 
 interface Props {
-  fixedTrackId?: string; // si fourni : piste déjà choisie (rejoindre, ou "créer ici" depuis la fiche piste)
+  fixedTrackId?: string; // si fourni : piste imposée et verrouillée (rejoindre une session précise, ou "créer ici" depuis la fiche piste)
+  defaultTrackId?: string; // si fourni : piste pré-sélectionnée mais modifiable (ex. piste favorite du pilote)
   fixedDayKey?: string; // si fourni : jour déjà choisi (ex. depuis le calendrier)
+  initialEntry?: SessionParticipant; // si fourni : pré-remplit avec cette inscription existante (mode édition)
   onClose: () => void;
   onSaved: () => void;
 }
 
-export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, onSaved }: Props) {
+function timeStrFromTs(ts: number): string {
+  return new Date(ts).toTimeString().slice(0, 5);
+}
+
+export default function SessionFormModal({
+  fixedTrackId,
+  defaultTrackId,
+  fixedDayKey,
+  initialEntry,
+  onClose,
+  onSaved,
+}: Props) {
   const { user, profile } = useAuth();
   const { t, locale } = useLanguage();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [taxonomies, setTaxonomies] = useState<Taxonomy[]>([]);
-  const [trackId, setTrackId] = useState(fixedTrackId ?? "");
+  const [trackId, setTrackId] = useState(fixedTrackId ?? defaultTrackId ?? "");
   const [dayKey, setDayKey] = useState(fixedDayKey ?? todayDayKey());
-  const [startTime, setStartTime] = useState(roundedNowTimeStr());
-  const [endTime, setEndTime] = useState(addHoursToTimeStr(roundedNowTimeStr(), 2));
-  const [certainty, setCertainty] = useState<CertaintyLevel>(75);
-  const [disciplineId, setDisciplineId] = useState("");
-  const [scaleId, setScaleId] = useState("");
+  const [startTime, setStartTime] = useState(
+    initialEntry ? timeStrFromTs(initialEntry.start) : roundedNowTimeStr()
+  );
+  const [endTime, setEndTime] = useState(
+    initialEntry ? timeStrFromTs(initialEntry.end) : addHoursToTimeStr(roundedNowTimeStr(), 2)
+  );
+  const [certainty, setCertainty] = useState<CertaintyLevel>(initialEntry?.certainty ?? 75);
+  const [disciplineId, setDisciplineId] = useState(initialEntry?.disciplineId ?? "");
+  const [scaleId, setScaleId] = useState(initialEntry?.scaleId ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,9 +71,11 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
       const sorted = t.sort((a, b) => a.name.localeCompare(b.name));
       setTracks(sorted);
       setTaxonomies(tax);
-      if (!fixedTrackId && sorted.length > 0) setTrackId((prev) => prev || sorted[0].id);
+      if (!fixedTrackId && sorted.length > 0) {
+        setTrackId((prev) => prev || defaultTrackId || sorted[0].id);
+      }
     });
-  }, [fixedTrackId]);
+  }, [fixedTrackId, defaultTrackId]);
 
   const selectedTrack = tracks.find((t) => t.id === trackId) ?? null;
 
@@ -117,7 +136,7 @@ export default function SessionFormModal({ fixedTrackId, fixedDayKey, onClose, o
       <div className="flex max-h-[90vh] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-t-xl2 border border-track-border bg-track-surface p-5 md:rounded-xl2">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-lg font-bold uppercase">
-            {fixedTrackId ? t("session_join") : t("session_new")}
+            {initialEntry ? t("session_edit_participation") : fixedTrackId ? t("session_join") : t("session_new")}
           </h2>
           <button onClick={onClose} aria-label={t("close")}>
             <X size={20} className="text-track-muted" />

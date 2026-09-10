@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
@@ -69,7 +70,9 @@ export default function GaragePage() {
             className="flex items-center gap-3 rounded-xl2 border border-track-border bg-track-surface p-3"
           >
             {car.photoURL ? (
-              <img src={car.photoURL} alt={car.name} className="h-16 w-16 rounded-lg object-cover" />
+              <span className="relative block h-16 w-16 overflow-hidden rounded-lg">
+                <Image src={car.photoURL} alt={car.name} fill sizes="64px" className="object-cover" />
+              </span>
             ) : (
               <span className="flex h-16 w-16 items-center justify-center rounded-lg bg-track-surface2 text-2xl">
                 🏎️
