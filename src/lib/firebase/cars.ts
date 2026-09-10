@@ -109,14 +109,6 @@ export async function createSetup(
     authorName,
     createdAt: Date.now(),
   });
-
-  if (input.isPublic) {
-    fetch("/api/notify/setup-published", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ authorUid, authorName, carName }),
-    }).catch(() => {});
-  }
 }
 
 export async function updateSetup(carId: string, setupId: string, input: SetupInput): Promise<void> {

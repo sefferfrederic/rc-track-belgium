@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { X } from "lucide-react";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "@/lib/firebase/client";
-import { compressImage } from "@/lib/compressImage";
 import { fetchTracks } from "@/lib/firebase/tracks";
 import { createEvent, updateEvent, type EventInput } from "@/lib/firebase/events";
 import { translateMany } from "@/lib/translate";
@@ -46,10 +44,9 @@ export default function EventFormModal({
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const compressed = await compressImage(file);
-    const path = `events/${Date.now()}-${compressed.name}`;
+    const path = `events/${Date.now()}-${file.name}`;
     const storageRef = ref(storage, path);
-    await uploadBytes(storageRef, compressed);
+    await uploadBytes(storageRef, file);
     const url = await getDownloadURL(storageRef);
     setPhotoURL(url);
   }
@@ -170,9 +167,7 @@ export default function EventFormModal({
             Photo (facultatif)
           </label>
           {photoURL && (
-            <div className="relative mb-2 h-32 w-full overflow-hidden rounded-lg">
-              <Image src={photoURL} alt="" fill sizes="400px" className="object-cover" />
-            </div>
+            <img src={photoURL} alt="" className="mb-2 h-32 w-full rounded-lg object-cover" />
           )}
           <input type="file" accept="image/*" onChange={handlePhotoChange} className="text-sm" />
         </div>

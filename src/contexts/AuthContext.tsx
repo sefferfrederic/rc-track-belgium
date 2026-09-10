@@ -4,7 +4,6 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase/client";
-import { normalizeProfile } from "@/lib/firebase/auth";
 import type { UserProfile } from "@/types";
 
 interface AuthContextValue {
@@ -37,12 +36,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!user) return;
-    const ref = doc(db, "users", user.uid);
-    const unsubscribeProfile = onSnapshot(ref, (snap) => {
-      setProfile(snap.exists() ? normalizeProfile(snap.data()) : null);
-      setLoading(false);
-    });
-    return () => unsubscribeProfile();
+    let unsubscribeProfile: (() => void) | undefined;
+    let retryTimeout: ReturnType<typeof setTimeout> | undefined;
+    let cancelled = false;
+
+    const subscribe = () => {
+      const ref = doc(db, "users", user.uid);
+      unsubscribeProfile = onSnapshot(
+        ref,
+        (snap) => {
+          setProfile(snap.exists() ? (snap.data() as UserProfile) : null);
+          setLoading(false);
+        },
+        (error) => {
+          // Juste après une connexion, le token d'auth peut ne pas encore être
+          // propagé au moment où ce listener démarre : Firestore renvoie alors
+          // un unique "permission-denied" avant de se stabiliser. On réessaie
+          // une fois plutôt que de laisser planter l'app.
+          if (error.code === "permission-denied" && !cancelled) {
+            retryTimeout = setTimeout(subscribe, 500);
+          } else {
+            console.error("Erreur chargement profil :", error);
+            setLoading(false);
+          }
+        }
+      );
+    };
+    subscribe();
+
+    return () => {
+      cancelled = true;
+      if (retryTimeout) clearTimeout(retryTimeout);
+      unsubscribeProfile?.();
+    };
   }, [user]);
 
   return <AuthContext.Provider value={{ user, profile, loading }}>{children}</AuthContext.Provider>;

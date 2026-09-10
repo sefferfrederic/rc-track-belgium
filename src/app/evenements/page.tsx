@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
@@ -62,9 +61,7 @@ export default function EvenementsPage() {
           return (
             <div key={ev.id} className="overflow-hidden rounded-xl2 border border-track-border bg-track-surface">
               {ev.photoURL && (
-                <div className="relative h-40 w-full">
-                  <Image src={ev.photoURL} alt={ev.title} fill sizes="(max-width: 640px) 100vw, 600px" className="object-cover" />
-                </div>
+                <img src={ev.photoURL} alt={ev.title} className="h-40 w-full object-cover" />
               )}
               <div className="p-4">
                 <p className="font-display text-lg font-bold">

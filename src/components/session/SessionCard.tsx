@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { MessageCircle } from "lucide-react";
-import Image from "next/image";
+import { MessageCircle, Facebook } from "lucide-react";
 import CertaintyGauge from "@/components/ui/CertaintyGauge";
 import Button from "@/components/ui/Button";
 import SessionChat from "@/components/session/SessionChat";
-import SessionFormModal from "@/components/session/SessionFormModal";
 import { cancelSessionEntry } from "@/lib/firebase/sessions";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -33,7 +31,6 @@ export default function SessionCard({
   const { t, locale } = useLanguage();
   const [cancelling, setCancelling] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
 
   const taxLabel = (id?: string | null) => (id ? taxonomies.find((t) => t.id === id)?.label : null);
 
@@ -48,6 +45,21 @@ export default function SessionCard({
     } finally {
       setCancelling(false);
     }
+  }
+
+  function handleShareFacebook() {
+    const dateLabel = new Date(`${session.dayKey}T00:00:00`).toLocaleDateString(
+      locale === "nl" ? "nl-BE" : "fr-BE",
+      { weekday: "long", day: "numeric", month: "long" }
+    );
+    const quote =
+      locale === "nl"
+        ? `Ik rijd in ${trackName} op ${dateLabel} van ${fmtTime(session.windowStart, locale)} tot ${fmtTime(session.windowEnd, locale)} — wie doet er mee? 🏎️`
+        : `Je roule à ${trackName} le ${dateLabel} de ${fmtTime(session.windowStart, locale)} à ${fmtTime(session.windowEnd, locale)} — qui vient ? 🏎️`;
+    const shareUrl = new URL("https://www.facebook.com/sharer/sharer.php");
+    shareUrl.searchParams.set("u", window.location.origin);
+    shareUrl.searchParams.set("quote", quote);
+    window.open(shareUrl.toString(), "_blank", "noopener,noreferrer,width=600,height=520");
   }
 
   return (
@@ -84,9 +96,7 @@ export default function SessionCard({
             <li key={p.uid} className="flex items-center justify-between text-sm">
               <span className="flex items-center gap-2">
                 {p.photoURL ? (
-                  <span className="relative block h-6 w-6 overflow-hidden rounded-full">
-                    <Image src={p.photoURL} alt="" fill sizes="24px" className="object-cover" />
-                  </span>
+                  <img src={p.photoURL} alt="" className="h-6 w-6 rounded-full object-cover" />
                 ) : (
                   <span className="h-6 w-6 rounded-full bg-track-surface2" />
                 )}
@@ -104,15 +114,18 @@ export default function SessionCard({
       <div className="mt-3 flex items-center gap-2">
         {myEntry ? (
           <>
-            <Button variant="ghost" onClick={() => setEditOpen(true)} className="!px-0">
-              {t("session_edit_participation")}
-            </Button>
             <Button variant="ghost" onClick={handleCancel} disabled={cancelling} className="!px-0">
               {cancelling ? t("session_cancelling") : t("session_cancel_participation")}
             </Button>
             <button
+              onClick={handleShareFacebook}
+              className="ml-auto flex items-center gap-1.5 rounded-full border border-track-border bg-track-surface2 px-4 py-2 text-xs font-display font-bold uppercase tracking-wide text-track-white hover:border-track-orange/60"
+            >
+              <Facebook size={15} strokeWidth={2.5} /> {t("session_share_facebook")}
+            </button>
+            <button
               onClick={() => setChatOpen(true)}
-              className="ml-auto flex items-center gap-1.5 rounded-full bg-flag-gradient px-4 py-2 text-xs font-display font-bold uppercase tracking-wide text-track-bg shadow-glow"
+              className="flex items-center gap-1.5 rounded-full bg-flag-gradient px-4 py-2 text-xs font-display font-bold uppercase tracking-wide text-track-bg shadow-glow"
             >
               <MessageCircle size={15} strokeWidth={2.5} /> {t("session_chat")}
             </button>
@@ -129,19 +142,6 @@ export default function SessionCard({
           sessionId={session.id}
           sessionWindowEnd={session.windowEnd}
           onClose={() => setChatOpen(false)}
-        />
-      )}
-
-      {editOpen && myEntry && (
-        <SessionFormModal
-          fixedTrackId={session.trackId}
-          fixedDayKey={session.dayKey}
-          initialEntry={myEntry}
-          onClose={() => setEditOpen(false)}
-          onSaved={() => {
-            setEditOpen(false);
-            onChanged();
-          }}
         />
       )}
     </div>

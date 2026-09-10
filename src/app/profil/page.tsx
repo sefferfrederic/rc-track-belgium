@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "@/lib/firebase/client";
-import { compressImage } from "@/lib/compressImage";
 import { signOut } from "@/lib/firebase/auth";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -64,9 +63,8 @@ function ProfilPageInner() {
     if (!file || !user) return;
     setSaving(true);
     try {
-      const compressed = await compressImage(file, 400, 0.85); // avatar : petit format, suffisant
       const storageRef = ref(storage, `avatars/${user.uid}`);
-      await uploadBytes(storageRef, compressed);
+      await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
       await updateDoc(doc(db, "users", user.uid), { photoURL: url });
     } finally {
@@ -125,31 +123,22 @@ function ProfilPageInner() {
           {t("profile_favorite_track")}
         </label>
         <p className="mt-1 text-xs text-track-muted">{t("profile_favorite_hint")}</p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {tracks.map((tr) => {
-            const isFavorite = (profile.favoriteTrackIds ?? []).includes(tr.id);
-            return (
-              <button
-                key={tr.id}
-                type="button"
-                onClick={async () => {
-                  if (!user) return;
-                  const current = profile.favoriteTrackIds ?? [];
-                  const next = isFavorite ? current.filter((id) => id !== tr.id) : [...current, tr.id];
-                  await updateDoc(doc(db, "users", user.uid), { favoriteTrackIds: next });
-                }}
-                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
-                  isFavorite
-                    ? "border-track-orange bg-track-orange/10 text-track-white"
-                    : "border-track-border text-track-muted"
-                }`}
-              >
-                {tr.name}
-              </button>
-            );
-          })}
-          {tracks.length === 0 && <p className="text-xs text-track-muted">…</p>}
-        </div>
+        <select
+          value={profile.favoriteTrackId ?? ""}
+          onChange={async (e) => {
+            if (!user) return;
+            const value = e.target.value || null;
+            await updateDoc(doc(db, "users", user.uid), { favoriteTrackId: value });
+          }}
+          className="mt-2 w-full rounded-lg border border-track-border bg-track-surface2 px-4 py-3 text-sm outline-none focus:border-track-orange"
+        >
+          <option value="">{t("profile_no_favorite")}</option>
+          {tracks.map((tr) => (
+            <option key={tr.id} value={tr.id}>
+              {tr.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="grid w-full grid-cols-2 gap-4 text-center">
@@ -166,24 +155,6 @@ function ProfilPageInner() {
       <Link href="/garage" className="w-full">
         <Button variant="secondary" className="w-full">
           🔧 {locale === "nl" ? "Mijn garage" : "Mon garage"}
-        </Button>
-      </Link>
-
-      <Link href="/vente?mine=1" className="w-full">
-        <Button variant="secondary" className="w-full">
-          🛒 {locale === "nl" ? "Mijn advertenties" : "Mes annonces"}
-        </Button>
-      </Link>
-
-      <Link href="/mes-messages" className="w-full">
-        <Button variant="secondary" className="w-full">
-          💬 {locale === "nl" ? "Mijn berichten" : "Mes messages"}
-        </Button>
-      </Link>
-
-      <Link href="/profil/notifications" className="w-full">
-        <Button variant="secondary" className="w-full">
-          🔔 {t("notif_prefs_title")}
         </Button>
       </Link>
 
