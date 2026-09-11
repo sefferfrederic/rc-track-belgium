@@ -50,7 +50,7 @@ export default function SessionCard({
     }
   }
 
-  function handleShareFacebook() {
+  async function handleShareFacebook() {
     const dateLabel = new Date(`${session.dayKey}T00:00:00`).toLocaleDateString(
       locale === "nl" ? "nl-BE" : "fr-BE",
       { weekday: "long", day: "numeric", month: "long" }
@@ -59,6 +59,20 @@ export default function SessionCard({
       locale === "nl"
         ? `Ik rijd in ${trackName} op ${dateLabel} van ${fmtTime(session.windowStart, locale)} tot ${fmtTime(session.windowEnd, locale)} — wie doet er mee? 🏎️`
         : `Je roule à ${trackName} le ${dateLabel} de ${fmtTime(session.windowStart, locale)} à ${fmtTime(session.windowEnd, locale)} — qui vient ? 🏎️`;
+
+    // Sur mobile, sharer.php de Facebook redirige souvent vers l'app via un
+    // lien profond qui n'affiche pas de zone de texte éditable. Le menu de
+    // partage natif (navigator.share) laisse le texte modifiable, quelle que
+    // soit l'app choisie (Facebook, Messenger, WhatsApp...).
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ text: quote, url: window.location.origin });
+      } catch {
+        // L'utilisateur a annulé le partage — rien à faire.
+      }
+      return;
+    }
+
     const shareUrl = new URL("https://www.facebook.com/sharer/sharer.php");
     shareUrl.searchParams.set("u", window.location.origin);
     shareUrl.searchParams.set("quote", quote);
